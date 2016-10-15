@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="flicbutton"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <bridge-type id="flicbutton-bridge">
+        <label>FlicButton Bridge</label>
+        <description>This bridge represents a running instance of the fliclib-linux-hci server.</description>
+        
+        <config-description>
+            <parameter name="ADDR" type="text" required="true">
+                <label>IP or Host Name</label>
+                <description>IP or Host Name</description>
+                <default>localhost</default>
+            </parameter>
+            <parameter name="PORT" type="integer" required="true">
+                <label>Fliclib port</label>
+                <description>Port where fliclib is running. Defaults to 5551.</description>
+                <default>5551</default>
+            </parameter>
+        </config-description>
+    </bridge-type>
+
+    <thing-type id="flicbutton-thingtype">
+        <label>FlicButton Thing</label>
+        <description>Represents a Flic Button</description>
+        <channels>
+            <channel id="flicbutton-channel" typeId="flicbutton-channeltype"/>
+        </channels>
+    </thing-type>
+
+    <channel-type id="flicbutton-channeltype">
+        <item-type>Switch</item-type>
+        <label>FlicButton Channel Type</label>
+        <description>The Switch representing a Flic button</description>
+        <category>Switch</category>
+        <state readOnly="true" />
+    </channel-type>
+
+</thing:thing-descriptions>
