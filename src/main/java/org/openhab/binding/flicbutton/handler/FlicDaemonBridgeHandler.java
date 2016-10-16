@@ -91,6 +91,8 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
                     "Error while trying to connect to flicd!");
             return;
         }
+
+        updateStatus(ThingStatus.ONLINE);
     }
 
     private String getAndCheckBridgeHostname() throws UnknownHostException {
@@ -130,8 +132,9 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
                 client.addConnectionChannel(new ButtonConnectionChannel(bdaddr, eventListener));
             }
         });
-        client.handleEvents();
 
+        // TODO: This method is blocking!! Should be moved into a proper background ThreadPool.
+        client.handleEvents();
     }
 
     public Thing getFlicButtonThing(Bdaddr bdaddr) {
