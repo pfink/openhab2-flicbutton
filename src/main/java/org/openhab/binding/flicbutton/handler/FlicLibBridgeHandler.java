@@ -17,9 +17,13 @@ import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
+import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
+import org.openhab.binding.flicbutton.internal.discovery.FlicButtonDiscoveryService;
+import org.openhab.binding.flicbutton.internal.discovery.FlicButtonPassiveDiscoveryService;
+import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +43,7 @@ import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
 public class FlicLibBridgeHandler extends BaseBridgeHandler {
     private Logger logger = LoggerFactory.getLogger(FlicLibBridgeHandler.class);
     private FlicClient fliclibClient;
+    private FlicButtonDiscoveryService buttonDiscoveryService;
 
     public FlicLibBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -58,6 +63,16 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
     @Override
     public void initialize() {
         logger.debug("Initialize Fliclib bridge");
+        initButtonDiscoveryService();
+        connectToFlicd();
+    }
+
+    private void initButtonDiscoveryService() {
+        buttonDiscoveryService = new FlicButtonPassiveDiscoveryService(thing.getUID());
+        buttonDiscoveryService.start(bundleContext);
+    }
+
+    private void connectToFlicd() {
         try {
 
             String bridgeHostname = getAndCheckBridgeHostname();
@@ -117,5 +132,14 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
         });
         client.handleEvents();
 
+    }
+
+    public Thing getFlicButtonThing(Bdaddr bdaddr) {
+        ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, thing.getUID());
+        return this.getThingByUID(flicButtonUID);
+    }
+
+    FlicButtonDiscoveryService getButtonDiscoveryService() {
+        return this.buttonDiscoveryService;
     }
 }

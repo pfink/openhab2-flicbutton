@@ -7,13 +7,19 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
+import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.flic.fliclib.javaclient.enums.ConnectionStatus;
+import io.flic.fliclib.javaclient.enums.DisconnectReason;
 
 /**
  * The {@link FlicButtonHandler} is responsible for handling commands, which are
@@ -46,5 +52,25 @@ public class FlicButtonHandler extends BaseThingHandler {
         // as expected. E.g.
         // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
         // "Can not access device as username and/or password are invalid");
+
+    }
+
+    void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
+        if (connectionStatus == ConnectionStatus.Disconnected) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                    disconnectReason.toString());
+        } else {
+            updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
+        }
+    }
+
+    void flicButtonDown() {
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_BUTTON_PRESSED).getUID();
+        updateState(channelUID, OnOffType.ON);
+    }
+
+    void flicButtonUp() {
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_BUTTON_PRESSED).getUID();
+        updateState(channelUID, OnOffType.OFF);
     }
 }

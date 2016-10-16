@@ -34,6 +34,6 @@ public class FlicButtonBindingConstants {
     public static final String CONFIG_PORT = "PORT";
 
     // List of all Channel ids
-    public final static String CHANNEL_1 = "channel1";
+    public final static String CHANNEL_BUTTON_PRESSED = "button-pressed-channel";
 
 }
