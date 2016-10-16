@@ -13,12 +13,12 @@ import io.flic.fliclib.javaclient.enums.CreateConnectionChannelError;
 import io.flic.fliclib.javaclient.enums.DisconnectReason;
 import io.flic.fliclib.javaclient.enums.RemovedReason;
 
-public class FlicLibEventListener extends ButtonConnectionChannel.Callbacks {
-    private final Logger logger = LoggerFactory.getLogger(FlicLibEventListener.class);
+public class FlicDaemonEventListener extends ButtonConnectionChannel.Callbacks {
+    private final Logger logger = LoggerFactory.getLogger(FlicDaemonEventListener.class);
 
-    private final FlicLibBridgeHandler bridgeHandler;
+    private final FlicDaemonBridgeHandler bridgeHandler;
 
-    FlicLibEventListener(FlicLibBridgeHandler bridgeHandler) {
+    FlicDaemonEventListener(FlicDaemonBridgeHandler bridgeHandler) {
         this.bridgeHandler = bridgeHandler;
     }
 

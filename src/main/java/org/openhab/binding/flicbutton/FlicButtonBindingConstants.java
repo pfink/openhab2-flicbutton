@@ -23,17 +23,17 @@ public class FlicButtonBindingConstants {
     public static final String BINDING_ID = "flicbutton";
 
     // List of all Thing Type UIDs
-    public final static ThingTypeUID BRIDGE_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicbutton-bridge");
-    public final static ThingTypeUID FLICBUTTON_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicbutton-thingtype");
+    public final static ThingTypeUID BRIDGE_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicdaemon-bridge");
+    public final static ThingTypeUID FLICBUTTON_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicbutton-thing");
 
     public final static Set<ThingTypeUID> BRIDGE_THING_TYPES_UIDS = Collections.singleton(BRIDGE_THING_TYPE);
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(FLICBUTTON_THING_TYPE);
 
     // List of all configuration options
-    public static final String CONFIG_HOST_NAME = "ADDR";
-    public static final String CONFIG_PORT = "PORT";
+    public static final String CONFIG_HOST_NAME = "hostname";
+    public static final String CONFIG_PORT = "port";
 
     // List of all Channel ids
-    public final static String CHANNEL_BUTTON_PRESSED = "button-pressed-channel";
+    public final static String CHANNEL_ID_BUTTON_PRESSED = "flicbutton-pressed-channel";
 
 }

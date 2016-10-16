@@ -65,12 +65,12 @@ public class FlicButtonHandler extends BaseThingHandler {
     }
 
     void flicButtonDown() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_BUTTON_PRESSED).getUID();
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED).getUID();
         updateState(channelUID, OnOffType.ON);
     }
 
     void flicButtonUp() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_BUTTON_PRESSED).getUID();
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED).getUID();
         updateState(channelUID, OnOffType.OFF);
     }
 }

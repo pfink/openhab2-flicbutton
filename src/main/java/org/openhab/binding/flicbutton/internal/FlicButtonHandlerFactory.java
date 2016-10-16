@@ -16,7 +16,7 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.openhab.binding.flicbutton.handler.FlicButtonHandler;
-import org.openhab.binding.flicbutton.handler.FlicLibBridgeHandler;
+import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
 
 import com.google.common.collect.Sets;
 
@@ -44,7 +44,7 @@ public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
         if (thingTypeUID.equals(FlicButtonBindingConstants.FLICBUTTON_THING_TYPE)) {
             return new FlicButtonHandler(thing);
         } else if (thingTypeUID.equals(FlicButtonBindingConstants.BRIDGE_THING_TYPE)) {
-            return new FlicLibBridgeHandler((Bridge) thing);
+            return new FlicDaemonBridgeHandler((Bridge) thing);
         }
 
         return null;

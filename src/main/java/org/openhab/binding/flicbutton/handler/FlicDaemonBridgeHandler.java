@@ -36,16 +36,16 @@ import io.flic.fliclib.javaclient.enums.BdAddrType;
 import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
 
 /**
- * The {@link FlicLibBridgeHandler} handles a running instance of the fliclib-linux-hci server.
+ * The {@link FlicDaemonBridgeHandler} handles a running instance of the fliclib-linux-hci server (flicd).
  *
  * @author Patrick Fink - Initial contribution
  */
-public class FlicLibBridgeHandler extends BaseBridgeHandler {
-    private Logger logger = LoggerFactory.getLogger(FlicLibBridgeHandler.class);
+public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
+    private Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeHandler.class);
     private FlicClient fliclibClient;
     private FlicButtonDiscoveryService buttonDiscoveryService;
 
-    public FlicLibBridgeHandler(Bridge bridge) {
+    public FlicDaemonBridgeHandler(Bridge bridge) {
         super(bridge);
     }
 
@@ -80,7 +80,7 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
                     .parseInt(thing.getConfiguration().get(FlicButtonBindingConstants.CONFIG_PORT).toString());
 
             fliclibClient = new FlicClient(bridgeHostname, bridgePort);
-            registerButtonEventListener(fliclibClient);
+            registerFlicDaemonEventListener(fliclibClient);
 
         } catch (UnknownHostException ignored) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Hostname wrong or unknown!");
@@ -88,7 +88,7 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
         } catch (IOException ioError) {
             logger.error(ioError.toString());
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                    "Error while trying to connect to Fliclib!");
+                    "Error while trying to connect to flicd!");
             return;
         }
     }
@@ -104,8 +104,8 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
         return host_config;
     }
 
-    private void registerButtonEventListener(FlicClient client) throws IOException {
-        FlicLibEventListener eventListener = new FlicLibEventListener(this);
+    private void registerFlicDaemonEventListener(FlicClient client) throws IOException {
+        FlicDaemonEventListener eventListener = new FlicDaemonEventListener(this);
 
         // Register FlicButtonEventListener to all already existing Flic buttons
         client.getInfo(new GetInfoResponseCallback() {
@@ -125,7 +125,7 @@ public class FlicLibBridgeHandler extends BaseBridgeHandler {
         client.setGeneralCallbacks(new GeneralCallbacks() {
             @Override
             public void onNewVerifiedButton(Bdaddr bdaddr) throws IOException {
-                logger.info("A new Flic button was added by an external fliclib client: " + bdaddr
+                logger.info("A new Flic button was added by an external flicd client: " + bdaddr
                         + ". Now connecting to it...");
                 client.addConnectionChannel(new ButtonConnectionChannel(bdaddr, eventListener));
             }

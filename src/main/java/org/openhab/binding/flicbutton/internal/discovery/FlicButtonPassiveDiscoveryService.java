@@ -16,8 +16,8 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
-import org.openhab.binding.flicbutton.handler.FlicLibBridgeHandler;
-import org.openhab.binding.flicbutton.handler.FlicLibEventListener;
+import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
+import org.openhab.binding.flicbutton.handler.FlicDaemonEventListener;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -28,9 +28,9 @@ import io.flic.fliclib.javaclient.Bdaddr;
 
 /**
  * For each configured flicd service, there is a {@link FlicButtonPassiveDiscoveryService} which will be initialized by
- * {@link FlicLibBridgeHandler}.
+ * {@link FlicDaemonBridgeHandler}.
  *
- * This Discovery Service will be called by {@link FlicLibEventListener}, if new buttons are appearing.
+ * This Discovery Service will be called by {@link FlicDaemonEventListener}, if new buttons are appearing.
  * That's why it's called "Passive"DiscoveryService, it does not actively scan for new Flic Buttons and
  * do not support adding new ones on it's own. Currently, new buttons have to be added e.g. via simpleclient by Shortcut
  * Labs.

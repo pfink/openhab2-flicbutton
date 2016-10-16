@@ -4,36 +4,36 @@
         xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <bridge-type id="flicbutton-bridge">
+    <bridge-type id="flicdaemon-bridge">
         <label>FlicButton Bridge</label>
-        <description>This bridge represents a running instance of the fliclib-linux-hci server.</description>
+        <description>This bridge represents a running instance of the fliclib-linux-hci server (flicd).</description>
         
         <config-description>
-            <parameter name="ADDR" type="text" required="true">
-                <label>IP or Host Name</label>
-                <description>IP or Host Name</description>
+            <parameter name="hostname" type="text" required="true">
+                <label>Flic daemon (flicd) hostname</label>
+                <description>IP or Host name of the Flic daemon (flicd). Defaults to localhost.</description>
                 <default>localhost</default>
             </parameter>
-            <parameter name="PORT" type="integer" required="true">
-                <label>Fliclib port</label>
-                <description>Port where fliclib is running. Defaults to 5551.</description>
+            <parameter name="port" type="integer" required="true">
+                <label>Flic daemon (flicd) port</label>
+                <description>Port where flicd is running. Defaults to 5551.</description>
                 <default>5551</default>
             </parameter>
         </config-description>
     </bridge-type>
 
-    <thing-type id="flicbutton-thingtype">
+    <thing-type id="flicbutton-thing">
         <label>FlicButton Thing</label>
-        <description>Represents a Flic Button</description>
+        <description>The thing(-type) representing a Flic Button</description>
         <channels>
-            <channel id="button-pressed-channel" typeId="button-pressed-channeltype"/>
+            <channel id="flicbutton-pressed-channel" typeId="flicbutton-pressed-channeltype"/>
         </channels>
     </thing-type>
 
-    <channel-type id="button-pressed-channeltype">
+    <channel-type id="flicbutton-pressed-channeltype">
         <item-type>Switch</item-type>
         <label>FlicButton Switch</label>
-        <description>The Switch representing a Flic button</description>
+        <description>The Switch representing a Flic button. Will be "ON" if the flicbutton is currently pressed. E.g. to trigger a rule "onRelease", listen to state changes from "ON" to "OFF".</description>
         <category>Switch</category>
         <state readOnly="true" />
     </channel-type>
