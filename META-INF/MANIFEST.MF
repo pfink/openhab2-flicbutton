@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.openhab.binding.flicbutton;singleton:=true
 Bundle-Vendor: openHAB
 Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .
+Bundle-ClassPath: ., lib/fliclib-linux-hci-client-4ddb2ac.jar
 Import-Package: 
  org.openhab.binding.flicbutton,
  org.openhab.binding.flicbutton.handler,
@@ -20,3 +20,6 @@ Import-Package:
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.openhab.binding.flicbutton,
  org.openhab.binding.flicbutton.handler
+Require-Bundle: org.eclipse.smarthome.config.discovery,
+ org.eclipse.osgi,
+ com.google.guava

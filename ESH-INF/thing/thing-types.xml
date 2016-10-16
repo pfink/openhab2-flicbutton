@@ -32,7 +32,7 @@
 
     <channel-type id="flicbutton-channeltype">
         <item-type>Switch</item-type>
-        <label>FlicButton Channel Type</label>
+        <label>FlicButton Switch</label>
         <description>The Switch representing a Flic button</description>
         <category>Switch</category>
         <state readOnly="true" />

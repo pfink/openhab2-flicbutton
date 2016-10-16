@@ -7,16 +7,18 @@
  */
 package org.openhab.binding.flicbutton.internal;
 
-import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.THING_TYPE_FLICBUTTON;
-
-import java.util.Collections;
 import java.util.Set;
 
+import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.openhab.binding.flicbutton.handler.FlicButtonHandler;
+import org.openhab.binding.flicbutton.handler.FlicLibBridgeHandler;
+
+import com.google.common.collect.Sets;
 
 /**
  * The {@link FlicButtonHandlerFactory} is responsible for creating things and thing
@@ -26,7 +28,8 @@ import org.openhab.binding.flicbutton.handler.FlicButtonHandler;
  */
 public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
 
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_FLICBUTTON);
+    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(
+            FlicButtonBindingConstants.BRIDGE_THING_TYPES_UIDS, FlicButtonBindingConstants.SUPPORTED_THING_TYPES_UIDS);
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -38,8 +41,10 @@ public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
 
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(THING_TYPE_FLICBUTTON)) {
+        if (thingTypeUID.equals(FlicButtonBindingConstants.FLICBUTTON_THING_TYPE)) {
             return new FlicButtonHandler(thing);
+        } else if (thingTypeUID.equals(FlicButtonBindingConstants.BRIDGE_THING_TYPE)) {
+            return new FlicLibBridgeHandler((Bridge) thing);
         }
 
         return null;

@@ -7,6 +7,9 @@
  */
 package org.openhab.binding.flicbutton;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 
 /**
@@ -20,7 +23,15 @@ public class FlicButtonBindingConstants {
     public static final String BINDING_ID = "flicbutton";
 
     // List of all Thing Type UIDs
-    public final static ThingTypeUID THING_TYPE_FLICBUTTON = new ThingTypeUID(BINDING_ID, "flicbutton-thingtype");
+    public final static ThingTypeUID BRIDGE_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicbutton-bridge");
+    public final static ThingTypeUID FLICBUTTON_THING_TYPE = new ThingTypeUID(BINDING_ID, "flicbutton-thingtype");
+
+    public final static Set<ThingTypeUID> BRIDGE_THING_TYPES_UIDS = Collections.singleton(BRIDGE_THING_TYPE);
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(FLICBUTTON_THING_TYPE);
+
+    // List of all configuration options
+    public static final String CONFIG_HOST_NAME = "ADDR";
+    public static final String CONFIG_PORT = "PORT";
 
     // List of all Channel ids
     public final static String CHANNEL_1 = "channel1";
