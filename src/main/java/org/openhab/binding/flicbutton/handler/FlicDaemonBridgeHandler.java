@@ -87,8 +87,13 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     }
 
     private void setStatusToOfflineOnAsyncClientFailure() {
-        flicClientFuture.addListener(() -> updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                "FlicDaemon client terminated"), scheduler);
+        flicClientFuture.addListener(new Runnable() {
+            @Override
+            public void run() {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "FlicDaemon client terminated");
+            }
+        }, scheduler);
     }
 
     public Thing getFlicButtonThing(Bdaddr bdaddr) {
