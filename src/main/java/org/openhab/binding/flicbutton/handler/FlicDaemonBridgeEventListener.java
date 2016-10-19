@@ -13,12 +13,12 @@ import io.flic.fliclib.javaclient.enums.CreateConnectionChannelError;
 import io.flic.fliclib.javaclient.enums.DisconnectReason;
 import io.flic.fliclib.javaclient.enums.RemovedReason;
 
-public class FlicDaemonEventListener extends ButtonConnectionChannel.Callbacks {
-    private final Logger logger = LoggerFactory.getLogger(FlicDaemonEventListener.class);
+public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callbacks {
+    private final Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeEventListener.class);
 
     private final FlicDaemonBridgeHandler bridgeHandler;
 
-    FlicDaemonEventListener(FlicDaemonBridgeHandler bridgeHandler) {
+    FlicDaemonBridgeEventListener(FlicDaemonBridgeHandler bridgeHandler) {
         this.bridgeHandler = bridgeHandler;
     }
 
@@ -27,13 +27,13 @@ public class FlicDaemonEventListener extends ButtonConnectionChannel.Callbacks {
             CreateConnectionChannelError createConnectionChannelError, ConnectionStatus connectionStatus) {
         logger.debug("Create response " + channel.getBdaddr() + ": " + createConnectionChannelError + ", "
                 + connectionStatus);
-
+        // Handling does not differ from Status change, so redirect
         onConnectionStatusChanged(channel, connectionStatus, null);
     }
 
     @Override
     public void onRemoved(ButtonConnectionChannel channel, RemovedReason removedReason) {
-
+        // TODO: Handle removed button
         logger.debug("Channel removed for " + channel.getBdaddr() + ": " + removedReason);
 
     }
@@ -46,13 +46,6 @@ public class FlicDaemonEventListener extends ButtonConnectionChannel.Callbacks {
 
         Thing flicButtonThing = bridgeHandler.getFlicButtonThing(channel.getBdaddr());
 
-        if (flicButtonThing != null) {
-            FlicButtonHandler thingHandler = (FlicButtonHandler) flicButtonThing.getHandler();
-            thingHandler.flicConnectionStatusChanged(connectionStatus, disconnectReason);
-
-        } else if (connectionStatus != ConnectionStatus.Disconnected) {
-            bridgeHandler.getButtonDiscoveryService().flicButtonDiscovered(channel.getBdaddr());
-        }
     }
 
     @Override
@@ -72,7 +65,6 @@ public class FlicDaemonEventListener extends ButtonConnectionChannel.Callbacks {
                 thingHandler.flicButtonDown();
             }
         }
-
     }
 
 }
