@@ -41,7 +41,7 @@ public class FlicDaemonClientRunner implements Runnable {
         }
     }
 
-    private void registerFlicClientEventListener(FlicClient client) throws IOException {
+    private void registerFlicClientEventListener(final FlicClient client) throws IOException {
 
         // Register FlicButtonEventListener to all already existing Flic buttons
         client.getInfo(new GetInfoResponseCallback() {
