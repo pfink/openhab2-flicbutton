@@ -46,6 +46,13 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
 
         Thing flicButtonThing = bridgeHandler.getFlicButtonThing(channel.getBdaddr());
 
+        if (flicButtonThing != null) {
+            FlicButtonHandler thingHandler = (FlicButtonHandler) flicButtonThing.getHandler();
+            thingHandler.flicConnectionStatusChanged(connectionStatus, disconnectReason);
+
+        } else if (connectionStatus != ConnectionStatus.Disconnected) {
+            bridgeHandler.getButtonDiscoveryService().flicButtonDiscovered(channel.getBdaddr());
+        }
     }
 
     @Override
@@ -66,5 +73,4 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
             }
         }
     }
-
 }
