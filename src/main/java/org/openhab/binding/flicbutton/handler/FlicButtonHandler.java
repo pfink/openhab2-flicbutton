@@ -7,6 +7,8 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
+import java.util.Objects;
+
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -50,7 +52,7 @@ public class FlicButtonHandler extends BaseThingHandler {
     void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
         if (connectionStatus == ConnectionStatus.Disconnected) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
-                    disconnectReason.toString());
+                    "Disconnect Reason: " + Objects.toString(disconnectReason));
         } else {
             updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
         }
