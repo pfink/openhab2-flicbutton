@@ -27,6 +27,7 @@
         <description>The thing(-type) representing a Flic Button</description>
         <channels>
             <channel id="flicbutton-pressed-channel" typeId="flicbutton-pressed-channeltype"/>
+            <channel id="button-trigger" typeId="system.button"/>
         </channels>
     </thing-type>
 
