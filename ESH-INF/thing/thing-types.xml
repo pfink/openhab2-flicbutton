@@ -4,7 +4,7 @@
         xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <bridge-type id="flicdaemon-bridge">
+    <bridge-type id="flicd-bridge">
         <label>FlicButton Bridge</label>
         <description>This bridge represents a running instance of the fliclib-linux-hci server (flicd).</description>
         
@@ -22,16 +22,16 @@
         </config-description>
     </bridge-type>
 
-    <thing-type id="flicbutton-thing">
+    <thing-type id="button">
         <label>FlicButton Thing</label>
         <description>The thing(-type) representing a Flic Button</description>
         <channels>
-            <channel id="flicbutton-pressed-channel" typeId="flicbutton-pressed-channeltype"/>
-            <channel id="button-trigger" typeId="system.button"/>
+            <channel id="pressed-switch" typeId="pressed-switch-type"/>
+            <channel id="events" typeId="system.button"/>
         </channels>
     </thing-type>
 
-    <channel-type id="flicbutton-pressed-channeltype">
+    <channel-type id="pressed-switch-type">
         <item-type>Switch</item-type>
         <label>FlicButton Switch</label>
         <description>The Switch representing a Flic button. Will be "ON" if the flicbutton is currently pressed. E.g. to trigger a rule "onRelease", listen to state changes from "ON" to "OFF".</description>

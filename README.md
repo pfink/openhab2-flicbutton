@@ -27,7 +27,7 @@ I strongly advice against using this within a production system right now. Curre
 1. Add one or more bridges (one for each flicd service you're running - typically just a single one) to your *.things file:
 
 	```
-	Bridge flicbutton:flicdaemon-bridge:mybridge [ hostname="<YOUR_HOSTNAME>" ]
+	Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>" ]
 	```
 
 	Please consider that flicd does only accept connections from localhost by default.
@@ -52,14 +52,14 @@ I strongly advice against using this within a production system right now. Curre
     ```
     rule "My Flic Short Pressed Rule"
     when
-        Channel "flicbutton:flicbutton-thing:1:80-e4-da-71-12-34:button-trigger" triggered SHORT_PRESSED
+        Channel "flicbutton:button:1:80-e4-da-71-12-34:events" triggered SHORT_PRESSED
     then
         logInfo("Flic", "Flic 'short pressed' triggered")
     end
     
     rule "My Flic Rule"
     when
-        Channel "flicbutton:flicbutton-thing:1:80-e4-da-71-12-34:button-trigger" triggered
+        Channel "flicbutton:button:1:80-e4-da-71-12-34:events" triggered
     then
         logInfo("Flic", "Flic pressed: " + receivedEvent.event)
     end
