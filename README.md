@@ -48,7 +48,23 @@ I strongly advice against using this within a production system right now. Curre
 	        Light_Bedroom.sendCommand(OFF)
 	end
 	```
-
+1. Or use rules to react to `SINGLE_PRESSED`, `DOUBLE_PRESSED` or `LONG_PRESSED` events:
+    ```
+    rule "My Flic Short Pressed Rule"
+    when
+        Channel "flicbutton:flicbutton-thing:1:80-e4-da-71-12-34:button-trigger" triggered SHORT_PRESSED
+    then
+        logInfo("Flic", "Flic 'short pressed' triggered")
+    end
+    
+    rule "My Flic Rule"
+    when
+        Channel "flicbutton:flicbutton-thing:1:80-e4-da-71-12-34:button-trigger" triggered
+    then
+        logInfo("Flic", "Flic pressed: " + receivedEvent.event)
+    end
+    ```
+     
 ## License
 
 The code within this repository is released under Eclipse Publice License 1.0. Nevertheless, the released .jar contains the (compiled) java clientlib for flicd by Shortcut Labs (which was excluded from this repositories source files). For this java clientlib, Shortcut Labs made 2 statements regarding licensing [here](https://github.com/50ButtonsEach/fliclib-linux-hci/issues/35):

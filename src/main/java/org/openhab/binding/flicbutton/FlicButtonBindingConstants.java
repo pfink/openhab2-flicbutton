@@ -35,5 +35,6 @@ public class FlicButtonBindingConstants {
 
     // List of all Channel ids
     public final static String CHANNEL_ID_BUTTON_PRESSED = "flicbutton-pressed-channel";
+    public final static String CHANNEL_ID_BUTTON_TRIGGER = "button-trigger";
 
 }

@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
+import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
@@ -66,5 +67,22 @@ public class FlicButtonHandler extends BaseThingHandler {
     void flicButtonUp() {
         ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED).getUID();
         updateState(channelUID, OnOffType.OFF);
+    }
+
+    void flicButtonClickedSingle() {
+        flickButtonClicked(CommonTriggerEvents.SHORT_PRESSED);
+    }
+
+    void flicButtonClickedDouble() {
+        flickButtonClicked(CommonTriggerEvents.DOUBLE_PRESSED);
+    }
+
+    void flicButtonClickedHold() {
+        flickButtonClicked(CommonTriggerEvents.LONG_PRESSED);
+    }
+
+    private void flickButtonClicked(String event) {
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_TRIGGER).getUID();
+        triggerChannel(channelUID, event);
     }
 }
