@@ -1,6 +1,6 @@
 # OpenHab 2 Flic Button Binding ** Pre-Alpha **
 
-OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs.
+OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. **Important note: You're currently on the master / development branch. If you want to test the latest release (0.1 Pre-Alpha), [please switch to the 0.1 tag](https://github.com/pfink/openhab2-flicbutton/tree/0.1) to see the proper version of the documentation.**
 
 ## Current Status and ToDo's
 
@@ -16,7 +16,7 @@ OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicli
 - [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
 - [ ] Unit Tests?
 
-## Tested use case that should work in 0.1 / Pre-Alpha
+## Tested use case that should work in 0.5 / Alpha
 
 I strongly advice against using this within a production system right now. Currently, only basic capabilities are implemented and much stuff is not tested yet (like proper removal of buttons etc.). When you test this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and leave issues for stuff not listed in the ToDo's.
 
