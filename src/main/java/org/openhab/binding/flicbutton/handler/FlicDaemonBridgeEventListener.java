@@ -73,4 +73,25 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
             }
         }
     }
+
+    @Override
+    public void onButtonSingleOrDoubleClickOrHold(ButtonConnectionChannel channel, ClickType clickType,
+            boolean wasQueued, int timeDiff) throws IOException {
+
+        logger.debug(channel.getBdaddr() + " " + clickType.name());
+
+        Thing flicButtonThing = bridgeHandler.getFlicButtonThing(channel.getBdaddr());
+
+        if (flicButtonThing != null) {
+            FlicButtonHandler thingHandler = (FlicButtonHandler) flicButtonThing.getHandler();
+
+            if (clickType == ClickType.ButtonSingleClick) {
+                thingHandler.flicButtonClickedSingle();
+            } else if (clickType == ClickType.ButtonDoubleClick) {
+                thingHandler.flicButtonClickedDouble();
+            } else if (clickType == ClickType.ButtonHold) {
+                thingHandler.flicButtonClickedHold();
+            }
+        }
+    }
 }
