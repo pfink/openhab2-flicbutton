@@ -60,29 +60,31 @@ public class FlicButtonHandler extends BaseThingHandler {
     }
 
     void flicButtonDown() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED).getUID();
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.ON);
+        fireTriggerEvent(CommonTriggerEvents.PRESSED);
     }
 
     void flicButtonUp() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED).getUID();
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.OFF);
+        fireTriggerEvent(CommonTriggerEvents.RELEASED);
     }
 
     void flicButtonClickedSingle() {
-        flickButtonClicked(CommonTriggerEvents.SHORT_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.SHORT_PRESSED);
     }
 
     void flicButtonClickedDouble() {
-        flickButtonClicked(CommonTriggerEvents.DOUBLE_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.DOUBLE_PRESSED);
     }
 
     void flicButtonClickedHold() {
-        flickButtonClicked(CommonTriggerEvents.LONG_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.LONG_PRESSED);
     }
 
-    private void flickButtonClicked(String event) {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_TRIGGER).getUID();
+    private void fireTriggerEvent(String event) {
+        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_EVENTS).getUID();
         triggerChannel(channelUID, event);
     }
 }

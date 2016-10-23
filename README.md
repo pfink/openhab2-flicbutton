@@ -12,7 +12,7 @@ OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicli
 - [ ] Clarify licensing (see also 50ButtonsEach/fliclib-linux-hci#35)
 - [ ] Test and document some use cases for this binding (+ use openhab docs template)
 - [ ] Clarify and document deployment to already running OpenHab2 instances
-- [ ] More channels? Click, DoubleClick, Hold...
+- [x] More channels? Click, DoubleClick, Hold...
 - [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
 - [ ] Unit Tests?
 
