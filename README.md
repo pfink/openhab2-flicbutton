@@ -75,6 +75,7 @@ I strongly advice against using this within a production system right now. Curre
 
 - [x] Flic Button Auto Discovery (buttons have to be scanned and verified by other clients first, e.g. by simpleclient)
 - [x] Implement and test flicbutton-pressed-channel (channel that exposes the raw button state, pressed (ON) or unpressed (OFF) to a OpenHab Switch)
+- [ ] Replace `button-switch` channel by `system:rawbutton`
 - [ ] Handle removal of Flic Buttons
 - [ ] Handle temporary unavailibility of flicd (research how's the right way to handle such stuff in OpenHab2)
 - [ ] Add initial status check on FlicButtonHandler (buttons which are not auto discovered will currently not go online until the first status change happens)
