@@ -84,6 +84,9 @@ public class FlicButtonHandler extends BaseThingHandler {
     }
 
     private void fireTriggerEvent(String event) {
+        if (getThing().getStatus() != ThingStatus.ONLINE) {
+            updateStatus(ThingStatus.ONLINE);
+        }
         ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_EVENTS).getUID();
         triggerChannel(channelUID, event);
     }
