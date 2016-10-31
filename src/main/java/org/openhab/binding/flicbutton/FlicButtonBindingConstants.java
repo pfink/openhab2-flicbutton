@@ -37,4 +37,6 @@ public class FlicButtonBindingConstants {
     public final static String CHANNEL_ID_BUTTON_PRESSED_SWITCH = "pressed-switch";
     public final static String CHANNEL_ID_BUTTON_EVENTS = "events";
 
+    // Other stuff
+    public final static int BUTTON_OFFLINE_GRACE_PERIOD_SECONDS = 60;
 }

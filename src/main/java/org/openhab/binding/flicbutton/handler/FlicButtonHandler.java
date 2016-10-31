@@ -7,7 +7,11 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
+import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.*;
+
 import java.util.Objects;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -17,7 +21,6 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
-import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +36,7 @@ import io.flic.fliclib.javaclient.enums.DisconnectReason;
 public class FlicButtonHandler extends BaseThingHandler {
 
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
+    private ScheduledFuture delayedDisconnect;
 
     public FlicButtonHandler(Thing thing) {
         super(thing);
@@ -52,21 +56,41 @@ public class FlicButtonHandler extends BaseThingHandler {
 
     void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
         if (connectionStatus == ConnectionStatus.Disconnected) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
-                    "Disconnect Reason: " + Objects.toString(disconnectReason));
+            // Status change to offline have to be scheduled to improve stability, see issue #2
+            scheduleStatusChangeToOffline(disconnectReason);
         } else {
-            updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
+            setButtonOnline();
         }
     }
 
+    private void scheduleStatusChangeToOffline(DisconnectReason disconnectReason) {
+        if (delayedDisconnect == null) {
+            delayedDisconnect = scheduler.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                            "Disconnect Reason: " + Objects.toString(disconnectReason));
+                }
+            }, BUTTON_OFFLINE_GRACE_PERIOD_SECONDS, TimeUnit.SECONDS);
+        }
+    }
+
+    private void setButtonOnline() {
+        if (delayedDisconnect != null) {
+            delayedDisconnect.cancel(false);
+            delayedDisconnect = null;
+        }
+        updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
+    }
+
     void flicButtonDown() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
+        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.ON);
         fireTriggerEvent(CommonTriggerEvents.PRESSED);
     }
 
     void flicButtonUp() {
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
+        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.OFF);
         fireTriggerEvent(CommonTriggerEvents.RELEASED);
     }
@@ -87,7 +111,7 @@ public class FlicButtonHandler extends BaseThingHandler {
         if (getThing().getStatus() != ThingStatus.ONLINE) {
             updateStatus(ThingStatus.ONLINE);
         }
-        ChannelUID channelUID = thing.getChannel(FlicButtonBindingConstants.CHANNEL_ID_BUTTON_EVENTS).getUID();
+        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_EVENTS).getUID();
         triggerChannel(channelUID, event);
     }
 }
