@@ -37,6 +37,7 @@ public class FlicButtonHandler extends BaseThingHandler {
 
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
     private ScheduledFuture delayedDisconnect;
+    private DisconnectReason latestDisconnectReason;
 
     public FlicButtonHandler(Thing thing) {
         super(thing);
@@ -57,30 +58,33 @@ public class FlicButtonHandler extends BaseThingHandler {
     void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
         if (connectionStatus == ConnectionStatus.Disconnected) {
             // Status change to offline have to be scheduled to improve stability, see issue #2
-            scheduleStatusChangeToOffline(disconnectReason);
+            latestDisconnectReason = disconnectReason;
+            scheduleStatusChangeToOffline();
         } else {
-            setButtonOnline();
+            updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
         }
     }
 
-    private void scheduleStatusChangeToOffline(DisconnectReason disconnectReason) {
+    private void scheduleStatusChangeToOffline() {
         if (delayedDisconnect == null) {
             delayedDisconnect = scheduler.schedule(new Runnable() {
                 @Override
                 public void run() {
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
-                            "Disconnect Reason: " + Objects.toString(disconnectReason));
+                            "Disconnect Reason: " + Objects.toString(latestDisconnectReason));
                 }
             }, BUTTON_OFFLINE_GRACE_PERIOD_SECONDS, TimeUnit.SECONDS);
         }
     }
 
-    private void setButtonOnline() {
-        if (delayedDisconnect != null) {
+    // Cleanup delayedDisconnect on status change to online
+    @Override
+    protected void updateStatus(ThingStatus status, ThingStatusDetail statusDetail, String description) {
+        if (status == ThingStatus.ONLINE && delayedDisconnect != null) {
             delayedDisconnect.cancel(false);
             delayedDisconnect = null;
         }
-        updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
+        super.updateStatus(status, statusDetail, description);
     }
 
     void flicButtonDown() {
