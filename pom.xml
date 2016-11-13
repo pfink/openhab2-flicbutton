@@ -15,15 +15,4 @@
 
   <name>FlicButton Binding</name>
   <packaging>eclipse-plugin</packaging>
-  
-  
-  <dependencies>
-        <dependency>
-            <groupId>com.shortcutlabs.flic</groupId>
-            <artifactId>fliclib-linux-hci-client</artifactId>
-            <version>master-4ddb2ac</version>     
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/fliclib-linux-hci-client-4ddb2ac.jar</systemPath>
-        </dependency>
-   </dependencies>
 </project>
