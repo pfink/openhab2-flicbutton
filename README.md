@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton)
-# OpenHab 2 Flic Button Binding ** Pre-Alpha **
+# OpenHab 2 Flic Button Binding [![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton)
 
 OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. **Important note: You're currently on the master / development branch. If you want to test the latest release (0.1 Pre-Alpha), [please switch to the 0.1 tag](https://github.com/pfink/openhab2-flicbutton/tree/0.1) to see the proper version of the documentation.**
 
