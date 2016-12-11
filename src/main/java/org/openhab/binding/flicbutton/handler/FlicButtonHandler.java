@@ -14,7 +14,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
-import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -116,8 +115,7 @@ public class FlicButtonHandler extends BaseThingHandler {
         if (getThing().getStatus() != ThingStatus.ONLINE) {
             updateStatus(ThingStatus.ONLINE);
         }
-        Channel channel = thing.getChannel(channelID);
-        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_EVENTS).getUID();
+        ChannelUID channelUID = thing.getChannel(channelID).getUID();
         triggerChannel(channelUID, event);
     }
 }
