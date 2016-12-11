@@ -4,7 +4,7 @@ OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicli
 
 ## Supported Things
 
-* flicd-bridge - The bridge representing a running instance of the [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) server (flicd).
+* flicd-bridge - The bridge representing a running instance of the  server (flicd).
 * button - The flic button
 
 ## Discovery
@@ -19,19 +19,28 @@ OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicli
 The bridge should be added to a *.things file. Example:
 
 ```
-    Bridge flicbutton:flicd-bridge:mybridge
+Bridge flicbutton:flicd-bridge:mybridge
 ```
 
 The default host is localhost:5551 (this should be sufficient if flicd is running with default settings on the same server as OpenHab). If your flicd service is running somewhere else, specify it like this:
 
 ```
-    Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YOUR_PORT>"]
+Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YOUR_PORT>"]
 ```
-If flicd is running on a remote host, please do not forget to start it with the parameter `-s 0.0.0.0`, otherwise it won't be accessible for OpenHab.
+If flicd is running on a remote host, please do not forget to start it with the parameter `-s 0.0.0.0`, otherwise it won't be accessible for OpenHab (more details on [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci)).
 
 ### button
 
-No configuration possible.
+There are no configuration parameters for buttons available and normally no textual configuration is necessary as buttons are autodiscovered as soon as the bridge is configured. If you want to use textual configuration anyway, you can do it like this:
+
+```
+Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YOUR_PORT>"] {
+    Thing button <MAC_ADDRESS> "<YOUR_LABEL>"
+    Thing button <MAC_ADDRESS> "<YOUR_LABEL>"
+    ...
+}
+```
+You can lookup the MAC addresses of your buttons within the inbox of Paper UI. You're free to choose any label you like for your button.
 
 ## Channels
 
