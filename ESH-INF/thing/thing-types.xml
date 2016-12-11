@@ -27,10 +27,11 @@
         <description>The thing(-type) representing a Flic Button</description>
         <channels>
             <channel id="pressed-switch" typeId="pressed-switch-type"/>
-            <channel id="events" typeId="system.button"/>
+            <channel id="rawbutton" typeId="system.rawbutton"/>
+            <channel id="button" typeId="system.button"/>
         </channels>
     </thing-type>
-
+    
     <channel-type id="pressed-switch-type">
         <item-type>Switch</item-type>
         <label>FlicButton Switch</label>

@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
+import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -90,31 +91,32 @@ public class FlicButtonHandler extends BaseThingHandler {
     void flicButtonDown() {
         ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.ON);
-        fireTriggerEvent(CommonTriggerEvents.PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.PRESSED, CHANNEL_ID_RAWBUTTON_EVENTS);
     }
 
     void flicButtonUp() {
         ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.OFF);
-        fireTriggerEvent(CommonTriggerEvents.RELEASED);
+        fireTriggerEvent(CommonTriggerEvents.RELEASED, CHANNEL_ID_RAWBUTTON_EVENTS);
     }
 
     void flicButtonClickedSingle() {
-        fireTriggerEvent(CommonTriggerEvents.SHORT_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.SHORT_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
     }
 
     void flicButtonClickedDouble() {
-        fireTriggerEvent(CommonTriggerEvents.DOUBLE_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.DOUBLE_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
     }
 
     void flicButtonClickedHold() {
-        fireTriggerEvent(CommonTriggerEvents.LONG_PRESSED);
+        fireTriggerEvent(CommonTriggerEvents.LONG_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
     }
 
-    private void fireTriggerEvent(String event) {
+    private void fireTriggerEvent(String event, String channelID) {
         if (getThing().getStatus() != ThingStatus.ONLINE) {
             updateStatus(ThingStatus.ONLINE);
         }
+        Channel channel = thing.getChannel(channelID);
         ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_EVENTS).getUID();
         triggerChannel(channelUID, event);
     }

@@ -9,19 +9,38 @@ OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicli
 
 ## Discovery
 
-tbd
+* There is no automatic discovery for flicd-bridges available.
+* After flicd-bridge is (manually) configured, buttons will be automatically discovered as soon as they're addded with [simpleclient](https://github.com/50ButtonsEach/fliclib-linux-hci). If they're already attached to the flicd-bridge before configuring this binding, they'll be automatically discovered as soon as you click the button.
 
 ## Thing Configuration
 
-tbd
+### flicd-bridge
+
+The bridge should be added to a *.things file. Example:
+
+```
+    Bridge flicbutton:flicd-bridge:mybridge
+```
+
+The default host is localhost:5551 (this should be sufficient if flicd is running with default settings on the same server as OpenHab). If your flicd service is running somewhere else, specify it like this:
+
+```
+    Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YOUR_PORT>"]
+```
+If flicd is running on a remote host, please do not forget to start it with the parameter `-s 0.0.0.0`, otherwise it won't be accessible for OpenHab.
+
+### button
+
+No configuration possible.
 
 ## Channels
 
-* **events**: Triggers [button events](https://github.com/eclipse/smarthome/blob/master/tools/archetype/binding/src/main/resources/archetype-resources/README.md)
-* **button-switch**: Switch that exposes the button's current state (ON -> pressed; OFF -> not pressed)
+* **rawbutton**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_RAWBUTTON. Triggers raw [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): PRESSED / RELEASED
+* **button**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_BUTTON. Triggers common [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): SHORT_PRESSED / DOUBLE_PRESSED / LONG_PRESSED
+* **pressed-switch**: Switch that exposes the button's current state (ON -> pressed; OFF -> not pressed)
 
 
-## Full example / Currently tested use case that should work in 0.5 / Alpha
+## Full example
 
 I strongly advice against using this within a production system right now. Currently, only basic capabilities are implemented and much stuff is not tested yet (like proper removal of buttons etc.). When you test this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and leave issues for stuff not listed in the ToDo's.
 
@@ -40,9 +59,9 @@ I strongly advice against using this within a production system right now. Curre
 1. Check if the bridge got up correctly within the Things menue of PaperUI.
 1. Buttons should get discovered automatically and can be added as read-only Switches via Paper UI
 1. Now go to the PaperUI control page, press and hold the button -> the Switch should get "ON" as long as you hold the button
-1. Trigger something using Rules, e.g. toggle a light on/off each button click (here: on each button release, to be more correct):
+1. Now you can either bind items to the pressed-switch channel and trigger something on state changes or directly react to the events triggered by the button and rawbutton channel. Here some examples:
     ```
-    rule 'FlicLightOn'
+    rule 'Button rule using an item bound to the pressed-switch channel'
 
     when
         Item mybutton changed from ON to OFF
@@ -52,19 +71,19 @@ I strongly advice against using this within a production system right now. Curre
         else
             Light_Bedroom.sendCommand(OFF)
     end
-    ```
-1. Or use rules to react to `SINGLE_PRESSED`, `DOUBLE_PRESSED` or `LONG_PRESSED` events:
-    ```
-    rule "My Flic Short Pressed Rule"
+
+    rule "Button rule using the button channel"
+
     when
-        Channel "flicbutton:button:1:80-e4-da-71-12-34:events" triggered SHORT_PRESSED
+        Channel "flicbutton:button:1:80-e4-da-71-12-34:button" triggered SHORT_PRESSED
     then
         logInfo("Flic", "Flic 'short pressed' triggered")
     end
     
-    rule "My Flic Rule"
+    rule "Button rule directly using the rawbutton channel"
+
     when
-        Channel "flicbutton:button:1:80-e4-da-71-12-34:events" triggered
+        Channel "flicbutton:button:1:80-e4-da-71-12-34:rawbutton" triggered
     then
         logInfo("Flic", "Flic pressed: " + receivedEvent.event)
     end
@@ -75,12 +94,12 @@ I strongly advice against using this within a production system right now. Curre
 
 - [x] Flic Button Auto Discovery (buttons have to be scanned and verified by other clients first, e.g. by simpleclient)
 - [x] Implement and test flicbutton-pressed-channel (channel that exposes the raw button state, pressed (ON) or unpressed (OFF) to a OpenHab Switch)
-- [ ] Replace `button-switch` channel by `system:rawbutton`
+- [x] Replace `button-switch` channel by `system:rawbutton` (added `system:rawbutton` and renamed `button-switch` to `pressed-switch`. The latter will maybe removed later)
 - [ ] Handle removal of Flic Buttons
 - [ ] Handle temporary unavailibility of flicd (research how's the right way to handle such stuff in OpenHab2)
 - [ ] Add initial status check on FlicButtonHandler (buttons which are not auto discovered will currently not go online until the first status change happens)
 - [ ] Clarify licensing (see also 50ButtonsEach/fliclib-linux-hci#35)
-- [ ] Test and document some use cases for this binding (+ use openhab docs template)
+- [x] Test and document some use cases for this binding (+ use openhab docs template)
 - [ ] Clarify and document deployment to already running OpenHab2 instances
 - [x] More channels? Click, DoubleClick, Hold...
 - [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
