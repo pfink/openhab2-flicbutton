@@ -9,6 +9,10 @@
 package org.openhab.binding.flicbutton.handler;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -38,6 +42,7 @@ import io.flic.fliclib.javaclient.Bdaddr;
  */
 public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     private Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeHandler.class);
+    private static final long REINITIALIZE_DELAY_SECONDS = 10;
 
     // Config parameters
     private FlicDaemonBridgeConfiguration cfg;
@@ -45,6 +50,9 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     // Services
     private FlicButtonDiscoveryService buttonDiscoveryService;
     private ListenableFuture flicClientFuture;
+
+    // For disposal
+    private Collection<Future> startedTasks = new ArrayList<Future>(2);
 
     public FlicDaemonBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -84,6 +92,7 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
 
         ListeningExecutorService listeningExecutor = MoreExecutors.listeningDecorator(scheduler);
         flicClientFuture = listeningExecutor.submit(flicClientService);
+        startedTasks.add(flicClientFuture);
     }
 
     private void setStatusToOfflineOnAsyncClientFailure() {
@@ -92,8 +101,29 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
             public void run() {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                         "FlicDaemon client terminated");
+                dispose();
+                scheduleReinitialize();
             }
         }, scheduler);
+    }
+
+    @Override
+    public void dispose() {
+        for (Future startedTask : startedTasks) {
+            if (!startedTask.isDone()) {
+                startedTask.cancel(true);
+            }
+        }
+        startedTasks = new ArrayList<Future>(2);
+    }
+
+    private void scheduleReinitialize() {
+        startedTasks.add(scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                initialize();
+            }
+        }, REINITIALIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Thing getFlicButtonThing(Bdaddr bdaddr) {
@@ -107,12 +137,7 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        // Currently, no commands to the fliclib-linux-hci are supported.
+        // No commands to the fliclib-linux-hci are supported.
         // So there is nothing to handle in the bridge handler
-    }
-
-    @Override
-    public void thingUpdated(Thing thing) {
-        // TODO: Handle config update
     }
 }

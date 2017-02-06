@@ -1,6 +1,6 @@
 # OpenHab 2 Flic Button Binding [![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton)
 
-OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. **Important note: You're currently on the master / development branch. If you want to test the latest release (0.5 Alpha), [please switch to the 0.5 tag](https://github.com/pfink/openhab2-flicbutton/tree/0.5) to see the proper version of the documentation.**
+OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. When you use this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and leave issues for stuff not listed in the ToDo's.
 
 ## Supported Things
 
@@ -51,8 +51,6 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 
 ## Full example
 
-I strongly advice against using this within a production system right now. Currently, only basic capabilities are implemented and much stuff is not tested yet (like proper removal of buttons etc.). When you test this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and leave issues for stuff not listed in the ToDo's.
-
 1. Setup and run flicd as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci)
 1. Connect your buttons to flicd using the simpleclient as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci). Flicd has to run in background the whole time, simpleclient can be killed after you successfully tested the button connection
 1. Drop the .jar file of this plugin into the `addons` directory from OpenHab 2
@@ -98,18 +96,23 @@ I strongly advice against using this within a production system right now. Curre
     end
     ```
 
+## Update FlicButton Binding to the newest version
+
+1. Delete the old version's .jar file from the addons directory
+1. Download the newest release and put the new .jar file to the addons directory
+1. Restart OpenHab
 
 ## Current Status and ToDo's
 
 - [x] Flic Button Auto Discovery (buttons have to be scanned and verified by other clients first, e.g. by simpleclient)
 - [x] Implement and test flicbutton-pressed-channel (channel that exposes the raw button state, pressed (ON) or unpressed (OFF) to a OpenHab Switch)
 - [x] Replace `button-switch` channel by `system:rawbutton` (added `system:rawbutton` and renamed `button-switch` to `pressed-switch`. The latter will maybe removed later)
-- [ ] Handle removal of Flic Buttons
-- [ ] Handle temporary unavailibility of flicd (research how's the right way to handle such stuff in OpenHab2)
-- [ ] Add initial status check on FlicButtonHandler (buttons which are not auto discovered will currently not go online until the first status change happens)
+- [x] Handle removal of Flic Buttons (nothing special necessary here...)
+- [x] Handle temporary unavailibility of flicd (research how's the right way to handle such stuff in OpenHab2)
+- [ ] Add initial status check on FlicButtonHandler (currently just ONLINE is assumed)
 - [ ] Clarify licensing (see also 50ButtonsEach/fliclib-linux-hci#35)
 - [x] Test and document some use cases for this binding (+ use openhab docs template)
-- [ ] Clarify and document deployment to already running OpenHab2 instances
+- [x] Clarify and document deployment to already running OpenHab2 instances
 - [x] More channels? Click, DoubleClick, Hold...
 - [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
 - [ ] Unit Tests?
