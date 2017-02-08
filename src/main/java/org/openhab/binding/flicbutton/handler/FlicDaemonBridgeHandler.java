@@ -41,21 +41,24 @@ import io.flic.fliclib.javaclient.Bdaddr;
  * @author Patrick Fink - Initial contribution
  */
 public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
-    private Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeHandler.class);
     private static final long REINITIALIZE_DELAY_SECONDS = 10;
-
     // Config parameters
     private FlicDaemonBridgeConfiguration cfg;
-
     // Services
+    private ListeningExecutorService listeningScheduler = MoreExecutors.listeningDecorator(scheduler);
     private FlicButtonDiscoveryService buttonDiscoveryService;
     private ListenableFuture flicClientFuture;
-
     // For disposal
     private Collection<Future> startedTasks = new ArrayList<Future>(2);
 
     public FlicDaemonBridgeHandler(Bridge bridge) {
         super(bridge);
+    }
+
+    public Thing getFlicButtonThing(Bdaddr bdaddr) {
+        ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, thing.getUID());
+        return this.getThingByUID(flicButtonUID);
     }
 
     @Override
@@ -65,9 +68,8 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
         try {
             initConfigParameters();
             initButtonDiscoveryService();
-            listenToFlicDaemonAsync();
-            updateStatus(ThingStatus.ONLINE);
-            setStatusToOfflineOnAsyncClientFailure();
+            startFlicdClientAsync();
+            initThingStatus();
         } catch (UnknownHostException ignored) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Hostname wrong or unknown!");
             return;
@@ -85,26 +87,30 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
         buttonDiscoveryService.start(bundleContext);
     }
 
-    private void listenToFlicDaemonAsync() throws UnknownHostException {
+    private void startFlicdClientAsync() throws UnknownHostException {
         FlicDaemonBridgeEventListener flicDaemonEventListener = new FlicDaemonBridgeEventListener(this);
         FlicDaemonClientRunner flicClientService = new FlicDaemonClientRunner(flicDaemonEventListener,
                 cfg.getHostname(), cfg.getPort());
 
-        ListeningExecutorService listeningExecutor = MoreExecutors.listeningDecorator(scheduler);
-        flicClientFuture = listeningExecutor.submit(flicClientService);
+        flicClientFuture = listeningScheduler.submit(flicClientService);
+        flicClientFuture.addListener(() -> onClientFailure(), scheduler);
         startedTasks.add(flicClientFuture);
     }
 
-    private void setStatusToOfflineOnAsyncClientFailure() {
-        flicClientFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                        "FlicDaemon client terminated");
-                dispose();
-                scheduleReinitialize();
-            }
-        }, scheduler);
+    private void onClientFailure() {
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                "flicd client terminated, probably flicd is not reachable.");
+        dispose();
+        scheduleReinitialize();
+    }
+
+    private void initThingStatus() {
+        if (!flicClientFuture.isDone()) {
+            updateStatus(ThingStatus.ONLINE);
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                    "flicd client could not be started, probably flicd is not reachable.");
+        }
     }
 
     @Override
@@ -124,11 +130,6 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
                 initialize();
             }
         }, REINITIALIZE_DELAY_SECONDS, TimeUnit.SECONDS));
-    }
-
-    public Thing getFlicButtonThing(Bdaddr bdaddr) {
-        ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, thing.getUID());
-        return this.getThingByUID(flicButtonUID);
     }
 
     FlicButtonDiscoveryService getButtonDiscoveryService() {
