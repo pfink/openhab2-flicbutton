@@ -1,4 +1,5 @@
 language: java
+jdk: oraclejdk8
 before_install:
   - wget https://github.com/openhab/openhab2-addons/archive/master.tar.gz
   - tar xzfv master.tar.gz
