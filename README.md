@@ -1,4 +1,4 @@
-# OpenHab 2 Flic Button Binding [![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton)
+# OpenHab 2 Flic Button Binding [![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton) [![codebeat badge](https://codebeat.co/badges/c5ff5257-96fe-4414-ab57-240fde1dc9e9)](https://codebeat.co/projects/github-com-pfink-openhab2-flicbutton)
 
 OpenHab2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. When you use this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and leave issues for stuff not listed in the ToDo's.
 
@@ -86,7 +86,7 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
     then
         logInfo("Flic", "Flic 'short pressed' triggered")
     end
-    
+
     rule "Button rule directly using the rawbutton channel"
 
     when
@@ -117,7 +117,7 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 - [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
 - [ ] Unit Tests?
 
-     
+
 ## License
 
 The code within this repository is released under Eclipse Publice License 1.0. Nevertheless, the released .jar contains the (compiled) java clientlib for flicd by Shortcut Labs (which was excluded from this repositories source files). For this java clientlib, Shortcut Labs made 2 statements regarding licensing [here](https://github.com/50ButtonsEach/fliclib-linux-hci/issues/35):
