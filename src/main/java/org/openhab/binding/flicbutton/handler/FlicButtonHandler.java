@@ -87,6 +87,11 @@ public class FlicButtonHandler extends BaseThingHandler {
         super.updateStatus(status, statusDetail, description);
     }
 
+    void flicButtonRemoved() {
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.NONE,
+                "Button was removed/detached from flicd (e.g. by simpleclient).");
+    }
+
     void flicButtonDown() {
         ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
         updateState(channelUID, OnOffType.ON);
