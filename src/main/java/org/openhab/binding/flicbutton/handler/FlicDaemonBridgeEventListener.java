@@ -38,8 +38,7 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
     @Override
     public void onCreateConnectionChannelResponse(ButtonConnectionChannel channel,
             CreateConnectionChannelError createConnectionChannelError, ConnectionStatus connectionStatus) {
-        logger.debug("Create response " + channel.getBdaddr() + ": " + createConnectionChannelError + ", "
-                + connectionStatus);
+        logger.debug("Create response {}: {}, {}", channel.getBdaddr(), createConnectionChannelError, connectionStatus);
         // Handling does not differ from Status change, so redirect
         onConnectionStatusChanged(channel, connectionStatus, null);
     }
@@ -48,15 +47,16 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
     public void onRemoved(ButtonConnectionChannel channel, RemovedReason removedReason) {
         getFlicButtonHandler(channel.getBdaddr()).ifPresent(FlicButtonHandler::flicButtonRemoved);
 
-        logger.debug("Button " + channel.getBdaddr() + ": removed. ThingStatus updated to OFFLINE" + removedReason);
+        logger.debug("Button {} removed. ThingStatus updated to OFFLINE. Reason: {}", channel.getBdaddr(),
+                removedReason);
 
     }
 
     @Override
     public void onConnectionStatusChanged(ButtonConnectionChannel channel, ConnectionStatus connectionStatus,
             DisconnectReason disconnectReason) {
-        logger.debug("New status for " + channel.getBdaddr() + ": " + connectionStatus
-                + (connectionStatus == ConnectionStatus.Disconnected ? ", " + disconnectReason : ""));
+        logger.debug("New status for {}: {}", channel.getBdaddr(),
+                connectionStatus + (connectionStatus == ConnectionStatus.Disconnected ? ", " + disconnectReason : ""));
 
         Optional<FlicButtonHandler> thingHandler = getFlicButtonHandler(channel.getBdaddr());
 
@@ -71,7 +71,7 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
     public void onButtonUpOrDown(ButtonConnectionChannel channel, ClickType clickType, boolean wasQueued, int timeDiff)
             throws IOException {
 
-        logger.debug(channel.getBdaddr() + " " + clickType.name());
+        logger.debug("{} {}", channel.getBdaddr(), clickType.name());
         FlicButtonHandler thingHandler = getFlicButtonHandler(channel.getBdaddr()).get();
 
         if (thingHandler != null) {

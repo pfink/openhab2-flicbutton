@@ -37,7 +37,7 @@ public class FlicDaemonClientRunner implements Runnable {
             client.handleEvents();
 
         } catch (IOException e) {
-            logger.error("Error occured while listening to flicd: " + e);
+            logger.error("Error occured while listening to flicd: {}", e);
         }
     }
 
@@ -61,8 +61,8 @@ public class FlicDaemonClientRunner implements Runnable {
         client.setGeneralCallbacks(new GeneralCallbacks() {
             @Override
             public void onNewVerifiedButton(Bdaddr bdaddr) throws IOException {
-                logger.info("A new Flic button was added by an external flicd client: " + bdaddr
-                        + ". Now connecting to it...");
+                logger.info("A new Flic button was added by an external flicd client: {}. Now connecting to it...",
+                        bdaddr);
                 client.addConnectionChannel(new ButtonConnectionChannel(bdaddr, eventListener));
             }
         });

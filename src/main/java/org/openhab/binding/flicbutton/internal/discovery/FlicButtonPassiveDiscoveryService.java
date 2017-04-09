@@ -16,8 +16,8 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
-import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
 import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeEventListener;
+import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -50,7 +50,7 @@ public class FlicButtonPassiveDiscoveryService extends AbstractDiscoveryService 
 
     @Override
     public ThingUID flicButtonDiscovered(Bdaddr bdaddr) {
-        logger.info("Flic Button " + bdaddr + " discovered!");
+        logger.info("Flic Button {} discovered!", bdaddr);
         ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, bridgeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(flicButtonUID).withBridge(bridgeUID).build();
