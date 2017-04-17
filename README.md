@@ -102,22 +102,6 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 1. Download the newest release and put the new .jar file to the addons directory
 1. Restart OpenHab
 
-## Current Status and ToDo's
-
-- [x] Flic Button Auto Discovery (buttons have to be scanned and verified by other clients first, e.g. by simpleclient)
-- [x] Implement and test flicbutton-pressed-channel (channel that exposes the raw button state, pressed (ON) or unpressed (OFF) to a OpenHab Switch)
-- [x] Replace `button-switch` channel by `system:rawbutton` (added `system:rawbutton` and renamed `button-switch` to `pressed-switch`. The latter will maybe removed later)
-- [x] Handle removal of Flic Buttons (nothing special necessary here...)
-- [x] Handle temporary unavailibility of flicd (research how's the right way to handle such stuff in OpenHab2)
-- [ ] Add initial status check on FlicButtonHandler (currently just ONLINE is assumed)
-- [ ] Clarify licensing (see also 50ButtonsEach/fliclib-linux-hci#35)
-- [x] Test and document some use cases for this binding (+ use openhab docs template)
-- [x] Clarify and document deployment to already running OpenHab2 instances
-- [x] More channels? Click, DoubleClick, Hold...
-- [ ] Integrate button scan and connection process to this binding so that simpleclient is not needed anymore (will probably not be done by me, but could be interesting stuff to contribute)
-- [ ] Unit Tests?
-
-
 ## License
 
 The code within this repository is released under Eclipse Publice License 1.0. Nevertheless, the released .jar contains the (compiled) java clientlib for flicd by Shortcut Labs (which was excluded from this repositories source files). For this java clientlib, Shortcut Labs made 2 statements regarding licensing [here](https://github.com/50ButtonsEach/fliclib-linux-hci/issues/35):

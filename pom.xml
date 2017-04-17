@@ -11,7 +11,7 @@
 
   <groupId>org.openhab.binding</groupId>
   <artifactId>org.openhab.binding.flicbutton</artifactId>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>0.9.0</version>
 
   <name>FlicButton Binding</name>
   <packaging>eclipse-plugin</packaging>
