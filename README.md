@@ -104,7 +104,4 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 
 ## License
 
-The code within this repository is released under Eclipse Publice License 1.0. Nevertheless, the released .jar contains the (compiled) java clientlib for flicd by Shortcut Labs (which was excluded from this repositories source files). For this java clientlib, Shortcut Labs made 2 statements regarding licensing [here](https://github.com/50ButtonsEach/fliclib-linux-hci/issues/35):
-
-1. `Basically, you may use examples and libraries in any way you wish as long as the purpose is to interact with our Flic buttons.`
-1. `Yes you can redistribute them in a .deb, or any other way you like.`
+The source code within this repository is released under Eclipse Publice License 1.0. Please be aware that the binary (.jar) releases may also contain software by other vendors which is not EPL-licensed.
