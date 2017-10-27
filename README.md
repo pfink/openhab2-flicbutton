@@ -27,6 +27,7 @@ The default host is localhost:5551 (this should be sufficient if flicd is runnin
 ```
 Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YOUR_PORT>"]
 ```
+
 If flicd is running on a remote host, please do not forget to start it with the parameter `-s 0.0.0.0`, otherwise it won't be accessible for OpenHab (more details on [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci)).
 
 ### button
@@ -40,6 +41,7 @@ Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>",  port="<YO
     ...
 }
 ```
+
 You can lookup the MAC addresses of your buttons within the inbox of Paper UI. You're free to choose any label you like for your button.
 
 ## Channels
