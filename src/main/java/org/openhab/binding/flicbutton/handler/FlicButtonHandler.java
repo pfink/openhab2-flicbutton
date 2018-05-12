@@ -10,11 +10,11 @@ package org.openhab.binding.flicbutton.handler;
 
 import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.*;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -22,9 +22,12 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.ButtonConnectionChannel;
 import io.flic.fliclib.javaclient.enums.ConnectionStatus;
 import io.flic.fliclib.javaclient.enums.DisconnectReason;
 
@@ -39,9 +42,16 @@ public class FlicButtonHandler extends BaseThingHandler {
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
     private ScheduledFuture delayedDisconnect;
     private DisconnectReason latestDisconnectReason;
+    private FlicDaemonBridgeHandler bridge;
+    private ButtonConnectionChannel connectionChannel;
 
     public FlicButtonHandler(Thing thing) {
         super(thing);
+        bridge = (FlicDaemonBridgeHandler) getBridge();
+    }
+
+    public Bdaddr getBdaddr() {
+        return FlicButtonUtils.getBdAddrFromThingUID(getThing().getUID());
     }
 
     @Override
@@ -51,9 +61,25 @@ public class FlicButtonHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        // TODO: Currently, just online is assumed. To be really correct, we have to ask Flic Daemon if button is
-        // currently connected
-        updateStatus(ThingStatus.ONLINE);
+        try {
+            FlicButtonEventListener eventListener = new FlicButtonEventListener(this);
+            connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
+            bridge.getFlicClient().addConnectionChannel(connectionChannel);
+            connectionChannel.wait(5000);
+        } catch (IOException | InterruptedException e) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+        }
+    }
+
+    @Override
+    public void handleRemoval() {
+        try {
+            bridge.getFlicClient().removeConnectionChannel(connectionChannel);
+        } catch (IOException e) {
+            logger.error("Error occured while removing button channel: {}", e);
+        }
+
+        super.handleRemoval();
     }
 
     void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
@@ -93,34 +119,11 @@ public class FlicButtonHandler extends BaseThingHandler {
                 "Button was removed/detached from flicd (e.g. by simpleclient).");
     }
 
-    void flicButtonDown() {
-        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
-        updateState(channelUID, OnOffType.ON);
-        fireTriggerEvent(CommonTriggerEvents.PRESSED, CHANNEL_ID_RAWBUTTON_EVENTS);
-    }
-
-    void flicButtonUp() {
-        ChannelUID channelUID = thing.getChannel(CHANNEL_ID_BUTTON_PRESSED_SWITCH).getUID();
-        updateState(channelUID, OnOffType.OFF);
-        fireTriggerEvent(CommonTriggerEvents.RELEASED, CHANNEL_ID_RAWBUTTON_EVENTS);
-    }
-
-    void flicButtonClickedSingle() {
-        fireTriggerEvent(CommonTriggerEvents.SHORT_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
-    }
-
-    void flicButtonClickedDouble() {
-        fireTriggerEvent(CommonTriggerEvents.DOUBLE_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
-    }
-
-    void flicButtonClickedHold() {
-        fireTriggerEvent(CommonTriggerEvents.LONG_PRESSED, CHANNEL_ID_BUTTON_EVENTS);
-    }
-
-    private void fireTriggerEvent(String event, String channelID) {
-        if (getThing().getStatus() != ThingStatus.ONLINE) {
-            updateStatus(ThingStatus.ONLINE);
-        }
+    void fireTriggerEvent(String event) {
+        String channelID = event == CommonTriggerEvents.PRESSED || event == CommonTriggerEvents.RELEASED
+                ? CHANNEL_ID_RAWBUTTON_EVENTS
+                : CHANNEL_ID_BUTTON_EVENTS;
+        updateStatus(ThingStatus.ONLINE);
         ChannelUID channelUID = thing.getChannel(channelID).getUID();
         triggerChannel(channelUID, event);
     }

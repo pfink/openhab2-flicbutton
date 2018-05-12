@@ -48,7 +48,6 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 
 * **rawbutton**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_RAWBUTTON. Triggers raw [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): PRESSED / RELEASED
 * **button**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_BUTTON. Triggers common [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): SHORT_PRESSED / DOUBLE_PRESSED / LONG_PRESSED
-* **pressed-switch**: Switch that exposes the button's current state (ON -> pressed; OFF -> not pressed)
 
 
 ## Full example
@@ -66,21 +65,9 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
     Please consider that flicd does only accept connections from localhost by default.
 1. Start OpenHab 2
 1. Check if the bridge got up correctly within the Things menue of PaperUI.
-1. Buttons should get discovered automatically and can be added as read-only Switches via Paper UI
-1. Now go to the PaperUI control page, press and hold the button -> the Switch should get "ON" as long as you hold the button
-1. Now you can either bind items to the pressed-switch channel and trigger something on state changes or directly react to the events triggered by the button and rawbutton channel. Here some examples:
+1. Start the discovery on PaperUI. After initial discovery, new buttons should get discovered automatically when being added via simpleclient (only if background discovery is enabled).
+1. Now you can trigger something on state changes or directly react to the events triggered by the button and rawbutton channel. Here some examples:
     ```
-    rule 'Button rule using an item bound to the pressed-switch channel'
-
-    when
-        Item mybutton changed from ON to OFF
-    then
-        if (Light_Bedroom.state != ON)
-            Light_Bedroom.sendCommand(ON)
-        else
-            Light_Bedroom.sendCommand(OFF)
-    end
-
     rule "Button rule using the button channel"
 
     when

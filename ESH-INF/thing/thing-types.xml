@@ -26,7 +26,6 @@
         <label>FlicButton Thing</label>
         <description>The thing(-type) representing a Flic Button</description>
         <channels>
-            <channel id="pressed-switch" typeId="pressed-switch-type"/>
             <channel id="rawbutton" typeId="system.rawbutton"/>
             <channel id="button" typeId="system.button"/>
         </channels>

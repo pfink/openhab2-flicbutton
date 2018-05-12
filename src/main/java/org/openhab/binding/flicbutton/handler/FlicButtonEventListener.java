@@ -9,13 +9,12 @@
 package org.openhab.binding.flicbutton.handler;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.jdt.annotation.NonNull;
+import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.flic.fliclib.javaclient.Bdaddr;
 import io.flic.fliclib.javaclient.ButtonConnectionChannel;
 import io.flic.fliclib.javaclient.enums.ClickType;
 import io.flic.fliclib.javaclient.enums.ConnectionStatus;
@@ -28,24 +27,13 @@ import io.flic.fliclib.javaclient.enums.RemovedReason;
  * @author Patrick Fink
  *
  */
-public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callbacks {
-    private final Logger logger = LoggerFactory.getLogger(FlicDaemonBridgeEventListener.class);
+public class FlicButtonEventListener extends ButtonConnectionChannel.Callbacks {
+    private final Logger logger = LoggerFactory.getLogger(FlicButtonEventListener.class);
 
-    private final FlicDaemonBridgeHandler bridgeHandler;
+    private final FlicButtonHandler thingHandler;
 
-    FlicDaemonBridgeEventListener(FlicDaemonBridgeHandler bridgeHandler) {
-        this.bridgeHandler = bridgeHandler;
-    }
-
-    private Optional<FlicButtonHandler> getFlicButtonHandler(Bdaddr bdaddr) {
-        Thing flicButtonThing = bridgeHandler.getFlicButtonThing(bdaddr);
-
-        if (flicButtonThing != null) {
-            FlicButtonHandler thingHandler = (FlicButtonHandler) flicButtonThing.getHandler();
-            return Optional.of(thingHandler);
-        } else {
-            return Optional.empty();
-        }
+    FlicButtonEventListener(@NonNull FlicButtonHandler thingHandler) {
+        this.thingHandler = thingHandler;
     }
 
     @Override
@@ -54,15 +42,14 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
         logger.debug("Create response {}: {}, {}", channel.getBdaddr(), createConnectionChannelError, connectionStatus);
         // Handling does not differ from Status change, so redirect
         onConnectionStatusChanged(channel, connectionStatus, null);
+        channel.notify();
     }
 
     @Override
     public void onRemoved(ButtonConnectionChannel channel, RemovedReason removedReason) {
-        getFlicButtonHandler(channel.getBdaddr()).ifPresent(FlicButtonHandler::flicButtonRemoved);
-
+        thingHandler.flicButtonRemoved();
         logger.debug("Button {} removed. ThingStatus updated to OFFLINE. Reason: {}", channel.getBdaddr(),
                 removedReason);
-
     }
 
     @Override
@@ -71,13 +58,7 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
         logger.debug("New status for {}: {}", channel.getBdaddr(),
                 connectionStatus + (connectionStatus == ConnectionStatus.Disconnected ? ", " + disconnectReason : ""));
 
-        Optional<FlicButtonHandler> thingHandler = getFlicButtonHandler(channel.getBdaddr());
-
-        if (thingHandler.isPresent()) {
-            thingHandler.get().flicConnectionStatusChanged(connectionStatus, disconnectReason);
-        } else if (connectionStatus != ConnectionStatus.Disconnected) {
-            bridgeHandler.getButtonDiscoveryService().flicButtonDiscovered(channel.getBdaddr());
-        }
+        thingHandler.flicConnectionStatusChanged(connectionStatus, disconnectReason);
     }
 
     @Override
@@ -85,28 +66,11 @@ public class FlicDaemonBridgeEventListener extends ButtonConnectionChannel.Callb
             throws IOException {
 
         logger.debug("{} {}", channel.getBdaddr(), clickType.name());
-        FlicButtonHandler thingHandler = getFlicButtonHandler(channel.getBdaddr()).get();
 
-        if (thingHandler != null) {
-            switch (clickType) {
-                case ButtonSingleClick:
-                    thingHandler.flicButtonClickedSingle();
-                    break;
-                case ButtonDoubleClick:
-                    thingHandler.flicButtonClickedDouble();
-                    break;
-                case ButtonHold:
-                    thingHandler.flicButtonClickedHold();
-                    break;
-                case ButtonDown:
-                    thingHandler.flicButtonDown();
-                    break;
-                case ButtonUp:
-                    thingHandler.flicButtonUp();
-                    break;
-                default:
-                    break;
-            }
+        String commonTriggerEvent = FlicButtonUtils.flicOpenhabTriggerEventMap.get(clickType.name());
+
+        if (commonTriggerEvent != null) {
+            thingHandler.fireTriggerEvent(commonTriggerEvent);
         }
     }
 

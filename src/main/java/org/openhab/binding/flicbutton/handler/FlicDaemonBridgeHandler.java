@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,16 +17,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.openhab.binding.flicbutton.internal.discovery.FlicButtonDiscoveryService;
-import org.openhab.binding.flicbutton.internal.discovery.FlicButtonPassiveDiscoveryService;
-import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +30,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.FlicClient;
 
 /**
  * The {@link FlicDaemonBridgeHandler} handles a running instance of the fliclib-linux-hci server (flicd).
@@ -51,14 +48,15 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     private ListenableFuture flicClientFuture;
     // For disposal
     private Collection<Future> startedTasks = new ArrayList<Future>(2);
+    private FlicClient flicClient;
 
-    public FlicDaemonBridgeHandler(Bridge bridge) {
+    public FlicDaemonBridgeHandler(Bridge bridge, FlicButtonDiscoveryService buttonDiscoveryService) {
         super(bridge);
+        this.buttonDiscoveryService = buttonDiscoveryService;
     }
 
-    public Thing getFlicButtonThing(Bdaddr bdaddr) {
-        ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, thing.getUID());
-        return this.getThingByUID(flicButtonUID);
+    public FlicClient getFlicClient() {
+        return flicClient;
     }
 
     @Override
@@ -67,12 +65,14 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
 
         try {
             initConfigParameters();
-            initButtonDiscoveryService();
             startFlicdClientAsync();
+            activateButtonDiscoveryService();
             initThingStatus();
         } catch (UnknownHostException ignored) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Hostname wrong or unknown!");
-            return;
+        } catch (IOException e) {
+            logger.warn("Error occured while connecting to flicd: {}", e);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Error connecting to flicd!");
         }
     }
 
@@ -82,15 +82,19 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
         cfg = new FlicDaemonBridgeConfiguration(hostConfigRaw, portConfigRaw);
     }
 
-    private void initButtonDiscoveryService() {
-        buttonDiscoveryService = new FlicButtonPassiveDiscoveryService(thing.getUID());
-        buttonDiscoveryService.start(bundleContext);
+    private void activateButtonDiscoveryService() {
+        buttonDiscoveryService.activate(flicClient);
     }
 
-    private void startFlicdClientAsync() throws UnknownHostException {
-        FlicDaemonBridgeEventListener flicDaemonEventListener = new FlicDaemonBridgeEventListener(this);
-        FlicDaemonClientRunner flicClientService = new FlicDaemonClientRunner(flicDaemonEventListener,
-                cfg.getHostname(), cfg.getPort());
+    private void startFlicdClientAsync() throws IOException {
+        flicClient = new FlicClient(cfg.getHostname().getHostAddress(), cfg.getPort());
+        Thread flicClientService = new Thread(() -> {
+            try {
+                flicClient.handleEvents();
+            } catch (IOException e) {
+                logger.error("Error occured while listening to flicd: {}", e);
+            }
+        });
 
         flicClientFuture = listeningScheduler.submit(flicClientService);
         flicClientFuture.addListener(() -> onClientFailure(), scheduler);
@@ -115,12 +119,14 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void dispose() {
+        super.dispose();
         for (Future startedTask : startedTasks) {
             if (!startedTask.isDone()) {
                 startedTask.cancel(true);
             }
         }
         startedTasks = new ArrayList<Future>(2);
+        buttonDiscoveryService.deactivate();
     }
 
     private void scheduleReinitialize() {

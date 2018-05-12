@@ -8,21 +8,19 @@
  */
 package org.openhab.binding.flicbutton.internal.discovery;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.osgi.framework.BundleContext;
 
 import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.FlicClient;
 
 /**
  *
  * @author Patrick Fink
  *
  */
-public interface FlicButtonDiscoveryService {
-
-    public void start(BundleContext bundleContext);
-
-    public void stop();
+public interface FlicButtonDiscoveryService extends DiscoveryService {
 
     /**
      *
@@ -30,4 +28,8 @@ public interface FlicButtonDiscoveryService {
      * @return UID that was created by the discovery service
      */
     public ThingUID flicButtonDiscovered(Bdaddr bdaddr);
+
+    public void activate(@NonNull FlicClient client);
+
+    public void deactivate();
 }
