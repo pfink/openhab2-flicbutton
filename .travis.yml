@@ -2,7 +2,7 @@ language: java
 jdk: oraclejdk8
 before_install:
   - wget https://github.com/openhab/openhab2-addons/archive/master.tar.gz
-  - tar xzfv master.tar.gz
+  - tar xzf master.tar.gz
   - mkdir openhab2-addons-master/addons/binding/org.openhab.binding.flicbutton
   - shopt -s extglob dotglob 
   - mv !(openhab2-addons-master) openhab2-addons-master/addons/binding/org.openhab.binding.flicbutton
