@@ -15,4 +15,19 @@
 
   <name>FlicButton Binding</name>
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.openhab.tools.sat</groupId>
+            <artifactId>sat-plugin</artifactId>
+            <version>{sat.version}</version>
+            <configuration>
+              <checkstyleProperties>tools/checkstyle.properties</checkstyleProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+    </pluginManagement>
+  </build>
 </project>
