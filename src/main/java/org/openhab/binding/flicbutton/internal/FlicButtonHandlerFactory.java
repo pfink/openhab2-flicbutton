@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
@@ -37,7 +39,6 @@ import org.openhab.binding.flicbutton.internal.discovery.FlicSimpleclientDiscove
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 
-import com.google.common.collect.Sets;
 
 /**
  * The {@link FlicButtonHandlerFactory} is responsible for creating things and thing
@@ -48,8 +49,8 @@ import com.google.common.collect.Sets;
 @Component(service = ThingHandlerFactory.class, configurationPid = "binding.flicbutton")
 public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
 
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(
-            FlicButtonBindingConstants.BRIDGE_THING_TYPES_UIDS, FlicButtonBindingConstants.SUPPORTED_THING_TYPES_UIDS);
+    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Stream.concat(
+            FlicButtonBindingConstants.BRIDGE_THING_TYPES_UIDS.stream(), FlicButtonBindingConstants.SUPPORTED_THING_TYPES_UIDS.stream()).collect(Collectors.toSet());
     private final Map<ThingUID, @Nullable ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
     @Override
@@ -84,7 +85,7 @@ public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
     }
 
     private synchronized void registerDiscoveryService(FlicButtonDiscoveryService discoveryService,
-            ThingUID bridgeUID) {
+                                                       ThingUID bridgeUID) {
         this.discoveryServiceRegs.put(bridgeUID, getBundleContext().registerService(DiscoveryService.class.getName(),
                 discoveryService, new Hashtable<String, Object>()));
     }
