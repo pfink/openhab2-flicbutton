@@ -95,4 +95,4 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 
 ## License
 
-The source code within this repository is released under Eclipse Publice License 1.0. Please be aware that the binary (.jar) releases may also contain software by other vendors which is not EPL-licensed.
+The source code within this repository is released under Eclipse Publice License 2.0 with GPL 3.0 (including classpath exception 2.0) as a secondary license. Please be aware that the binary (.jar) releases may also contain software by other vendors which is not EPL-licensed.
