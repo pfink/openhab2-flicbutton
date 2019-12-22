@@ -23,7 +23,10 @@
     </bridge-type>
 
     <thing-type id="button">
-        <label>FlicButton Thing</label>
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="flicd-bridge" />
+        </supported-bridge-type-refs>
+        <label>Flic Button</label>
         <description>The thing(-type) representing a Flic Button</description>
         <channels>
             <channel id="rawbutton" typeId="system.rawbutton"/>
