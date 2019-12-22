@@ -21,12 +21,14 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 import org.openhab.binding.flicbutton.handler.FlicButtonHandler;
 import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
 import org.openhab.binding.flicbutton.internal.discovery.FlicButtonDiscoveryService;
-import org.openhab.binding.flicbutton.internal.discovery.FlicButtonDiscoveryServiceImpl;
+import org.openhab.binding.flicbutton.internal.discovery.FlicSimpleclientDiscoveryServiceImpl;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Component;
 
 import com.google.common.collect.Sets;
 
@@ -36,6 +38,7 @@ import com.google.common.collect.Sets;
  *
  * @author Patrick Fink - Initial contribution
  */
+@Component(service = ThingHandlerFactory.class, configurationPid = "binding.flicbutton")
 public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
 
     private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(
@@ -55,7 +58,7 @@ public class FlicButtonHandlerFactory extends BaseThingHandlerFactory {
         if (thingTypeUID.equals(FlicButtonBindingConstants.FLICBUTTON_THING_TYPE)) {
             return new FlicButtonHandler(thing);
         } else if (thingTypeUID.equals(FlicButtonBindingConstants.BRIDGE_THING_TYPE)) {
-            FlicButtonDiscoveryService discoveryService = new FlicButtonDiscoveryServiceImpl(thing.getUID());
+            FlicButtonDiscoveryService discoveryService = new FlicSimpleclientDiscoveryServiceImpl(thing.getUID());
             FlicDaemonBridgeHandler bridgeHandler = new FlicDaemonBridgeHandler((Bridge) thing, discoveryService);
             registerDiscoveryService(discoveryService, thing.getUID());
 

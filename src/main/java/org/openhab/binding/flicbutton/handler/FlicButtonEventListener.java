@@ -37,12 +37,12 @@ public class FlicButtonEventListener extends ButtonConnectionChannel.Callbacks {
     }
 
     @Override
-    public void onCreateConnectionChannelResponse(ButtonConnectionChannel channel,
+    public synchronized void onCreateConnectionChannelResponse(ButtonConnectionChannel channel,
             CreateConnectionChannelError createConnectionChannelError, ConnectionStatus connectionStatus) {
         logger.debug("Create response {}: {}, {}", channel.getBdaddr(), createConnectionChannelError, connectionStatus);
         // Handling does not differ from Status change, so redirect
-        onConnectionStatusChanged(channel, connectionStatus, null);
-        channel.notify();
+        thingHandler.initializeStatus(connectionStatus);
+        notify();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class FlicButtonEventListener extends ButtonConnectionChannel.Callbacks {
         logger.debug("New status for {}: {}", channel.getBdaddr(),
                 connectionStatus + (connectionStatus == ConnectionStatus.Disconnected ? ", " + disconnectReason : ""));
 
-        thingHandler.flicConnectionStatusChanged(connectionStatus, disconnectReason);
+        thingHandler.connectionStatusChanged(connectionStatus, disconnectReason);
     }
 
     @Override
