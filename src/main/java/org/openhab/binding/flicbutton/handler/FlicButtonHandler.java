@@ -15,12 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
+import org.eclipse.smarthome.core.thing.*;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
@@ -37,17 +32,15 @@ import io.flic.fliclib.javaclient.enums.DisconnectReason;
  *
  * @author Patrick Fink - Initial contribution
  */
-public class FlicButtonHandler extends BaseThingHandler {
+public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler> {
 
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
-    private ScheduledFuture delayedDisconnect;
+    private ScheduledFuture delayedDisconnectTask;
     private DisconnectReason latestDisconnectReason;
-    private FlicDaemonBridgeHandler bridge;
     private ButtonConnectionChannel connectionChannel;
 
     public FlicButtonHandler(Thing thing) {
         super(thing);
-        bridge = (FlicDaemonBridgeHandler) getBridge();
     }
 
     public Bdaddr getBdaddr() {
@@ -61,55 +54,77 @@ public class FlicButtonHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
+        super.initialize();
+        if(bridgeValid) {
+            initializeThing();
+        }
+    }
+
+    public void initializeThing() {
         try {
             FlicButtonEventListener eventListener = new FlicButtonEventListener(this);
-            connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
-            bridge.getFlicClient().addConnectionChannel(connectionChannel);
-            connectionChannel.wait(5000);
+            synchronized(eventListener) {
+                connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
+                bridgeHandler.getFlicClient().addConnectionChannel(connectionChannel);
+                eventListener.wait(5000);
+                //Listener calls initializeStatus() before notifying so that ThingStatus is set at this point
+            }
         } catch (IOException | InterruptedException e) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+            logger.info("Connection setup for Flic Button {} failed. Exception: {}", this.getThing(), e);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Connection setup failed");
         }
     }
 
     @Override
-    public void handleRemoval() {
+    public void dispose() {
         try {
-            bridge.getFlicClient().removeConnectionChannel(connectionChannel);
+            bridgeHandler.getFlicClient().removeConnectionChannel(connectionChannel);
         } catch (IOException e) {
             logger.error("Error occured while removing button channel: {}", e);
         }
 
-        super.handleRemoval();
+        super.dispose();
     }
 
-    void flicConnectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
+    void initializeStatus(ConnectionStatus connectionStatus) {
+        if (connectionStatus == ConnectionStatus.Disconnected) {
+            setOffline();
+        } else {
+            setOnline();
+        }
+    }
+
+    void connectionStatusChanged(ConnectionStatus connectionStatus, DisconnectReason disconnectReason) {
+        latestDisconnectReason = disconnectReason;
         if (connectionStatus == ConnectionStatus.Disconnected) {
             // Status change to offline have to be scheduled to improve stability, see issue #2
-            latestDisconnectReason = disconnectReason;
             scheduleStatusChangeToOffline();
         } else {
-            updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button reconnected.");
+            setOnline();
         }
     }
 
     private void scheduleStatusChangeToOffline() {
-        if (delayedDisconnect == null) {
-            delayedDisconnect = scheduler.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
-                            "Disconnect Reason: " + Objects.toString(latestDisconnectReason));
-                }
-            }, BUTTON_OFFLINE_GRACE_PERIOD_SECONDS, TimeUnit.SECONDS);
+        if (delayedDisconnectTask == null) {
+            delayedDisconnectTask = scheduler.schedule(() -> setOffline(), BUTTON_OFFLINE_GRACE_PERIOD_SECONDS, TimeUnit.SECONDS);
         }
+    }
+
+    protected void setOnline() {
+        updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "Button connected.");
+    }
+
+    protected void setOffline() {
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
+                "Disconnect Reason: " + Objects.toString(latestDisconnectReason));
     }
 
     // Cleanup delayedDisconnect on status change to online
     @Override
     protected void updateStatus(ThingStatus status, ThingStatusDetail statusDetail, String description) {
-        if (status == ThingStatus.ONLINE && delayedDisconnect != null) {
-            delayedDisconnect.cancel(false);
-            delayedDisconnect = null;
+        if (status == ThingStatus.ONLINE && delayedDisconnectTask != null) {
+            delayedDisconnectTask.cancel(false);
+            delayedDisconnectTask = null;
         }
         super.updateStatus(status, statusDetail, description);
     }

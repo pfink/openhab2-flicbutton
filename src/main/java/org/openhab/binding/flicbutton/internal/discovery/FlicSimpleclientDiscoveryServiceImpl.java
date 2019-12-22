@@ -30,7 +30,7 @@ import io.flic.fliclib.javaclient.enums.BdAddrType;
 import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
 
 /**
- * For each configured flicd service, there is a {@link FlicButtonDiscoveryServiceImpl} which will be initialized by
+ * For each configured flicd service, there is a {@link FlicSimpleclientDiscoveryServiceImpl} which will be initialized by
  * {@link FlicDaemonBridgeHandler}.
  *
  * This Discovery Service will be called by {@link FlicButtonEventListener}, if new buttons are appearing.
@@ -40,14 +40,14 @@ import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
  *
  * @author Patrick Fink - Initial contribution
  */
-public class FlicButtonDiscoveryServiceImpl extends AbstractDiscoveryService implements FlicButtonDiscoveryService {
-    private final Logger logger = LoggerFactory.getLogger(FlicButtonDiscoveryServiceImpl.class);
+public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryService implements FlicButtonDiscoveryService {
+    private final Logger logger = LoggerFactory.getLogger(FlicSimpleclientDiscoveryServiceImpl.class);
 
     private boolean activated = false;
     private ThingUID bridgeUID;
     private FlicClient flicClient;
 
-    public FlicButtonDiscoveryServiceImpl(@NonNull ThingUID bridgeUID) {
+    public FlicSimpleclientDiscoveryServiceImpl(@NonNull ThingUID bridgeUID) {
         super(FlicButtonBindingConstants.SUPPORTED_THING_TYPES_UIDS, 2, true);
         this.bridgeUID = bridgeUID;
     }
@@ -117,7 +117,7 @@ public class FlicButtonDiscoveryServiceImpl extends AbstractDiscoveryService imp
         logger.info("Flic Button {} discovered!", bdaddr);
         ThingUID flicButtonUID = FlicButtonUtils.getThingUIDFromBdAddr(bdaddr, bridgeUID);
 
-        DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(flicButtonUID).withBridge(bridgeUID).build();
+        DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(flicButtonUID).withBridge(bridgeUID).withLabel("Flic Button " + bdaddr.toString().replace(":", "")).build();
         this.thingDiscovered(discoveryResult);
         return flicButtonUID;
     }
