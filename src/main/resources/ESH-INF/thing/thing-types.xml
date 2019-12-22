@@ -30,13 +30,4 @@
             <channel id="button" typeId="system.button"/>
         </channels>
     </thing-type>
-    
-    <channel-type id="pressed-switch-type">
-        <item-type>Switch</item-type>
-        <label>FlicButton Switch</label>
-        <description>The Switch representing a Flic button. Will be "ON" if the flicbutton is currently pressed. E.g. to trigger a rule "onRelease", listen to state changes from "ON" to "OFF".</description>
-        <category>Switch</category>
-        <state readOnly="true" />
-    </channel-type>
-
 </thing:thing-descriptions>
