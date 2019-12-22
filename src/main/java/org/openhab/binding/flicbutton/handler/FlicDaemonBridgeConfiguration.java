@@ -26,7 +26,10 @@ public class FlicDaemonBridgeConfiguration {
         this.port = port;
     }
 
-    FlicDaemonBridgeConfiguration(Object rawHostname, Object rawPort) throws UnknownHostException {
+    FlicDaemonBridgeConfiguration(Object rawHostname, Object rawPort) throws UnknownHostException, IllegalArgumentException {
+        if(rawHostname == null || rawPort != null) {
+            throw new IllegalArgumentException("Hostname and port must not be null");
+        }
         this.hostname = parseBridgeHostname(rawHostname);
         this.port = parseBridgePort(rawPort);
     }
