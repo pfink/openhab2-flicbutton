@@ -1,11 +1,18 @@
-/**
- * Copyright (c) 2016-2017 by the respective copyright holders.
+/********************************************************************
+ * Copyright (c) 2019 Patrick Fink
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 3
+ * with the GNU Classpath Exception 2.0 which is
+ * available at https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-3.0 WITH Classpath-exception-2.0
+ *******************************************************************/
 package org.openhab.binding.flicbutton.internal.util;
 
 import java.util.Map;
