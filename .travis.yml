@@ -1,9 +1,9 @@
 language: java
 jdk: openjdk11
 before_install:
-  - wget https://github.com/openhab/openhab2-addons/archive/master.tar.gz
-  - tar xzf master.tar.gz
-  - mkdir openhab2-addons-master/addons/binding/org.openhab.binding.flicbutton
+  - wget https://github.com/openhab/openhab-addons/archive/2.5.x.tar.gz
+  - tar xzf 2.5.x.tar.gz
+  - mkdir openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
   - shopt -s extglob dotglob 
-  - mv !(openhab2-addons-master) openhab2-addons-master/addons/binding/org.openhab.binding.flicbutton
-  - cd openhab2-addons-master/addons/binding/org.openhab.binding.flicbutton
+  - mv !(openhab-addons-2.5.x) openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
+  - cd openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
