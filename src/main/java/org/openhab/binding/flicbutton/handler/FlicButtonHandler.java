@@ -71,8 +71,9 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
         try {
             FlicButtonEventListener eventListener = new FlicButtonEventListener(this);
             synchronized(eventListener) {
-                connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
+                ButtonConnectionChannel connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
                 bridgeHandler.getFlicClient().addConnectionChannel(connectionChannel);
+                this.connectionChannel = connectionChannel;
                 eventListener.wait(5000);
                 //Listener calls initializeStatus() before notifying so that ThingStatus is set at this point
             }
@@ -85,7 +86,9 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
     @Override
     public void dispose() {
         try {
-            bridgeHandler.getFlicClient().removeConnectionChannel(connectionChannel);
+            if(connectionChannel != null) {
+                bridgeHandler.getFlicClient().removeConnectionChannel(connectionChannel);
+            }
         } catch (IOException e) {
             logger.error("Error occured while removing button channel: {}", e);
         }
