@@ -15,6 +15,20 @@
 
   <name>openHAB Add-ons :: Bundles :: FlicButton Binding</name>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.openhab.tools.sat</groupId>
+          <artifactId>sat-plugin</artifactId>
+          <configuration>
+            <checkstyleProperties>tools/checkstyle.properties</checkstyleProperties>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>

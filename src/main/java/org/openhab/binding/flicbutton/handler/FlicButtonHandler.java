@@ -78,7 +78,7 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
                 //Listener calls initializeStatus() before notifying so that ThingStatus is set at this point
             }
         } catch (IOException | InterruptedException e) {
-            logger.info("Connection setup for Flic Button {} failed. Exception: {}", this.getThing(), e);
+            logger.info("Connection setup for Flic Button {} failed.", this.getThing(), e);
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Connection setup failed");
         }
     }

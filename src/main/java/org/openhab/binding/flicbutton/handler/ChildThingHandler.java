@@ -28,6 +28,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Patrick Fink
+ * @param <BridgeHandlerType> The bridge type this child handler depends on
+ */
 public abstract class ChildThingHandler<BridgeHandlerType extends BridgeHandler> extends BaseThingHandler {
     private static final Collection<ThingStatus> defaultToleratedBridgeStatuses = Collections.singleton(ThingStatus.ONLINE);
     protected boolean bridgeValid = false;
