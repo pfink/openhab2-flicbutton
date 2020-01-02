@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 - 2019 Patrick Fink
+ * Copyright (c) 2016 - 2020 Patrick Fink
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
