@@ -15,15 +15,13 @@
  */
 package org.openhab.binding.flicbutton.internal.util;
 
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
+import io.flic.fliclib.javaclient.Bdaddr;
 import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 
-import com.google.common.collect.ImmutableMap;
-
-import io.flic.fliclib.javaclient.Bdaddr;
+import java.util.Map;
 
 /**
  *

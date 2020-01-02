@@ -15,8 +15,12 @@
  */
 package org.openhab.binding.flicbutton.internal.discovery;
 
-import java.io.IOException;
-
+import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.FlicClient;
+import io.flic.fliclib.javaclient.GeneralCallbacks;
+import io.flic.fliclib.javaclient.GetInfoResponseCallback;
+import io.flic.fliclib.javaclient.enums.BdAddrType;
+import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
@@ -29,12 +33,7 @@ import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.flic.fliclib.javaclient.Bdaddr;
-import io.flic.fliclib.javaclient.FlicClient;
-import io.flic.fliclib.javaclient.GeneralCallbacks;
-import io.flic.fliclib.javaclient.GetInfoResponseCallback;
-import io.flic.fliclib.javaclient.enums.BdAddrType;
-import io.flic.fliclib.javaclient.enums.BluetoothControllerState;
+import java.io.IOException;
 
 /**
  * For each configured flicd service, there is a {@link FlicSimpleclientDiscoveryServiceImpl} which will be initialized by

@@ -15,11 +15,7 @@
  */
 package org.openhab.binding.flicbutton.internal;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -37,7 +33,10 @@ import org.openhab.binding.flicbutton.internal.discovery.FlicSimpleclientDiscove
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 
-import com.google.common.collect.Sets;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The {@link FlicButtonHandlerFactory} is responsible for creating things and thing

@@ -15,10 +15,10 @@
  */
 package org.openhab.binding.flicbutton;
 
+import org.eclipse.smarthome.core.thing.ThingTypeUID;
+
 import java.util.Collections;
 import java.util.Set;
-
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
 
 /**
  * The {@link FlicButtonBinding} class defines common constants, which are

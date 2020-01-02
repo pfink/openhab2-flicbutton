@@ -15,12 +15,11 @@
  */
 package org.openhab.binding.flicbutton.internal.discovery;
 
+import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.FlicClient;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingUID;
-
-import io.flic.fliclib.javaclient.Bdaddr;
-import io.flic.fliclib.javaclient.FlicClient;
 
 /**
  *

@@ -15,19 +15,14 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
-import java.io.IOException;
-
+import io.flic.fliclib.javaclient.ButtonConnectionChannel;
+import io.flic.fliclib.javaclient.enums.*;
 import org.eclipse.jdt.annotation.NonNull;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.flic.fliclib.javaclient.ButtonConnectionChannel;
-import io.flic.fliclib.javaclient.enums.ClickType;
-import io.flic.fliclib.javaclient.enums.ConnectionStatus;
-import io.flic.fliclib.javaclient.enums.CreateConnectionChannelError;
-import io.flic.fliclib.javaclient.enums.DisconnectReason;
-import io.flic.fliclib.javaclient.enums.RemovedReason;
+import java.io.IOException;
 
 /**
  *

@@ -15,23 +15,22 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
-import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.*;
-
-import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
+import io.flic.fliclib.javaclient.Bdaddr;
+import io.flic.fliclib.javaclient.ButtonConnectionChannel;
+import io.flic.fliclib.javaclient.enums.ConnectionStatus;
+import io.flic.fliclib.javaclient.enums.DisconnectReason;
 import org.eclipse.smarthome.core.thing.*;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.flic.fliclib.javaclient.Bdaddr;
-import io.flic.fliclib.javaclient.ButtonConnectionChannel;
-import io.flic.fliclib.javaclient.enums.ConnectionStatus;
-import io.flic.fliclib.javaclient.enums.DisconnectReason;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.*;
 
 /**
  * The {@link FlicButtonHandler} is responsible for handling commands, which are
