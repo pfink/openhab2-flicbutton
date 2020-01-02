@@ -60,15 +60,13 @@ public abstract class ChildThingHandler<BridgeHandlerType extends BridgeHandler>
 
     protected void setStatusBasedOnBridge(Collection<ThingStatus> toleratedBridgeStatuses) {
         if(getBridge() != null) {
-            if(!toleratedBridgeStatuses.contains(getBridge().getStatus())) {
+            if(toleratedBridgeStatuses.contains(getBridge().getStatus())) {
+                bridgeValid = true;
+            } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE, "Bridge in unsupported status: " + getBridge().getStatus());
-                return;
             }
         } else {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED, "Bridge missing.");
-            return;
         }
-
-        bridgeValid = true;
     }
 }

@@ -50,9 +50,9 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     // Services
     private ListeningExecutorService listeningScheduler = MoreExecutors.listeningDecorator(scheduler);
     private FlicButtonDiscoveryService buttonDiscoveryService;
-    private ListenableFuture flicClientFuture;
+    private ListenableFuture<?> flicClientFuture;
     // For disposal
-    private Collection<Future> startedTasks = new ArrayList<Future>(2);
+    private Collection<Future<?>> startedTasks = new ArrayList<>(2);
     private FlicClient flicClient;
 
     public FlicDaemonBridgeHandler(Bridge bridge, FlicButtonDiscoveryService buttonDiscoveryService) {
@@ -96,13 +96,13 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
 
     private void startFlicdClientAsync() throws IOException {
         flicClient = new FlicClient(cfg.getHostname().getHostAddress(), cfg.getPort());
-        Thread flicClientService = new Thread(() -> {
+        Runnable flicClientService = () -> {
             try {
                 flicClient.handleEvents();
             } catch (IOException e) {
                 logger.error("Error occured while listening to flicd: {}", e);
             }
-        });
+        };
 
         flicClientFuture = listeningScheduler.submit(flicClientService);
         flicClientFuture.addListener(() -> onClientFailure(), scheduler);
@@ -128,12 +128,12 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     @Override
     public void dispose() {
         super.dispose();
-        for (Future startedTask : startedTasks) {
+        for (Future<?> startedTask : startedTasks) {
             if (!startedTask.isDone()) {
                 startedTask.cancel(true);
             }
         }
-        startedTasks = new ArrayList<Future>(2);
+        startedTasks = new ArrayList<>(2);
         buttonDiscoveryService.deactivate();
     }
 
@@ -144,10 +144,6 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
                 initialize();
             }
         }, REINITIALIZE_DELAY_SECONDS, TimeUnit.SECONDS));
-    }
-
-    FlicButtonDiscoveryService getButtonDiscoveryService() {
-        return this.buttonDiscoveryService;
     }
 
     @Override

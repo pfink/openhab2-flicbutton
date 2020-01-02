@@ -41,7 +41,7 @@ import static org.openhab.binding.flicbutton.FlicButtonBindingConstants.*;
 public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler> {
 
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
-    private ScheduledFuture delayedDisconnectTask;
+    private ScheduledFuture<?> delayedDisconnectTask;
     private DisconnectReason latestDisconnectReason;
     private ButtonConnectionChannel connectionChannel;
 

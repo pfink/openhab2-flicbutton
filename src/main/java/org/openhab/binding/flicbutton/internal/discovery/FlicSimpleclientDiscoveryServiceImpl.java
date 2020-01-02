@@ -27,8 +27,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
-import org.openhab.binding.flicbutton.handler.FlicButtonEventListener;
-import org.openhab.binding.flicbutton.handler.FlicDaemonBridgeHandler;
+import org.openhab.binding.flicbutton.internal.FlicButtonHandlerFactory;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +36,12 @@ import java.io.IOException;
 
 /**
  * For each configured flicd service, there is a {@link FlicSimpleclientDiscoveryServiceImpl} which will be initialized by
- * {@link FlicDaemonBridgeHandler}.
+ * {@link FlicButtonHandlerFactory}.
  *
- * This Discovery Service will be called by {@link FlicButtonEventListener}, if new buttons are appearing.
- * That's why it's called "Passive"DiscoveryService, it does not actively scan for new Flic Buttons and
- * do not support adding new ones on it's own. Currently, new buttons have to be added e.g. via simpleclient by Shortcut
- * Labs.
+ * It can scan for Flic Buttons already that are already added to fliclib-linux-hci ("verified" buttons), *
+ * but it does not support adding and verify new buttons on it's own.
+ * New buttons have to be added (verified) e.g. via simpleclient by Shortcut Labs.
+ * Background discovery listens for new buttons that are getting verified.
  *
  * @author Patrick Fink - Initial contribution
  */
@@ -80,7 +79,9 @@ public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryServi
 
         } catch (IOException e) {
             logger.warn("Error occured during button discovery: {}", e);
-            scanListener.onErrorOccurred(e);
+            if (this.scanListener != null) {
+                scanListener.onErrorOccurred(e);
+            }
         }
     }
 
