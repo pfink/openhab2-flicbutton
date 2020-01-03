@@ -90,7 +90,8 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 ## Update FlicButton Binding to the newest version
 
 1. Delete the old version's .jar file from the addons directory
-1. Download the newest release and put the new .jar file to the addons directory
+1. Download the newest [release](https://github.com/pfink/openhab2-flicbutton/releases) and put the new .jar file to the addons directory
+1. If there are upgrade instructions for this specific release within the release notes, please follow them.
 1. Restart openHAB
 
 ## License
