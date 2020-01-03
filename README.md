@@ -6,8 +6,8 @@ openHAB 2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicl
 
 ## Supported Things
 
-* flicd-bridge - The bridge representing a running instance of the  server (flicd).
-* button - The flic button
+* flicd-bridge - The bridge representing a running instance of [fliclib-linux-hci (flicd)](https://github.com/50ButtonsEach/fliclib-linux-hci) on the server .
+* button - The Flic button (supports Flic 1 buttons as well as Flic 2 buttons)
 
 ## Discovery
 
