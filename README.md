@@ -12,7 +12,7 @@ openHAB 2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/flicl
 ## Discovery
 
 * There is no automatic discovery for flicd-bridges available.
-* After flicd-bridge is (manually) configured, buttons will be automatically discovered as soon as they're addded with [simpleclient](https://github.com/50ButtonsEach/fliclib-linux-hci). If they're already attached to the flicd-bridge before configuring this binding, they'll be automatically discovered as soon as you click the button.
+* After flicd-bridge is (manually) configured, buttons will be automatically discovered as soon as they're addded with [simpleclient](https://github.com/50ButtonsEach/fliclib-linux-hci) via background discovery. If they're already attached to the flicd-bridge before configuring this binding, they can be discovered by triggering an active scan.
 
 ## Thing Configuration
 
