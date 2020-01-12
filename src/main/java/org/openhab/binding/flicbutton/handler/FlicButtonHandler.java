@@ -15,10 +15,12 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
+import io.flic.fliclib.javaclient.BatteryStatusListener;
 import io.flic.fliclib.javaclient.Bdaddr;
 import io.flic.fliclib.javaclient.ButtonConnectionChannel;
 import io.flic.fliclib.javaclient.enums.ConnectionStatus;
 import io.flic.fliclib.javaclient.enums.DisconnectReason;
+import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.thing.*;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.flicbutton.internal.util.FlicButtonUtils;
@@ -43,7 +45,8 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
     private Logger logger = LoggerFactory.getLogger(FlicButtonHandler.class);
     private ScheduledFuture<?> delayedDisconnectTask;
     private DisconnectReason latestDisconnectReason;
-    private ButtonConnectionChannel connectionChannel;
+    private ButtonConnectionChannel eventConnection;
+    BatteryStatusListener batteryConnection;
 
     public FlicButtonHandler(Thing thing) {
         super(thing);
@@ -68,11 +71,16 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
 
     public void initializeThing() {
         try {
+            FlicButtonBatteryLevelListener batteryListener = new FlicButtonBatteryLevelListener(this);
+            BatteryStatusListener batteryConnection = new BatteryStatusListener(getBdaddr(), batteryListener);
+            bridgeHandler.getFlicClient().addBatteryStatusListener(batteryConnection);
+            this.batteryConnection = batteryConnection;
+
             FlicButtonEventListener eventListener = new FlicButtonEventListener(this);
             synchronized(eventListener) {
-                ButtonConnectionChannel connectionChannel = new ButtonConnectionChannel(getBdaddr(), eventListener);
-                bridgeHandler.getFlicClient().addConnectionChannel(connectionChannel);
-                this.connectionChannel = connectionChannel;
+                ButtonConnectionChannel eventConnection = new ButtonConnectionChannel(getBdaddr(), eventListener);
+                bridgeHandler.getFlicClient().addConnectionChannel(eventConnection);
+                this.eventConnection = eventConnection;
                 eventListener.wait(5000);
                 //Listener calls initializeStatus() before notifying so that ThingStatus is set at this point
             }
@@ -85,8 +93,11 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
     @Override
     public void dispose() {
         try {
-            if(connectionChannel != null) {
-                bridgeHandler.getFlicClient().removeConnectionChannel(connectionChannel);
+            if(eventConnection != null) {
+                bridgeHandler.getFlicClient().removeConnectionChannel(eventConnection);
+            }
+            if(batteryConnection != null) {
+                bridgeHandler.getFlicClient().removeBatteryStatusListener(this.batteryConnection);
             }
         } catch (IOException e) {
             logger.error("Error occured while removing button channel: {}", e);
@@ -138,6 +149,11 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
         super.updateStatus(status, statusDetail, description);
     }
 
+    void updateBatteryChannel(int percent) {
+        DecimalType batteryLevel = new DecimalType(percent);
+        updateState(CHANNEL_ID_BATTERY_LEVEL, batteryLevel);
+    }
+
     void flicButtonRemoved() {
         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.NONE,
                 "Button was removed/detached from flicd (e.g. by simpleclient).");
@@ -148,7 +164,6 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
                 ? CHANNEL_ID_RAWBUTTON_EVENTS
                 : CHANNEL_ID_BUTTON_EVENTS;
         updateStatus(ThingStatus.ONLINE);
-        ChannelUID channelUID = thing.getChannel(channelID).getUID();
-        triggerChannel(channelUID, event);
+        triggerChannel(channelID, event);
     }
 }
