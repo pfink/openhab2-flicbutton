@@ -48,9 +48,9 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 
 ## Channels
 
-* **rawbutton**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_RAWBUTTON. Triggers raw [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): PRESSED / RELEASED
-* **button**: Uses [system channel](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/DefaultSystemChannelTypeProvider.java) SYSTEM_BUTTON. Triggers common [button events](https://github.com/eclipse/smarthome/blob/master/bundles/core/org.eclipse.smarthome.core.thing/src/main/java/org/eclipse/smarthome/core/thing/CommonTriggerEvents.java): SHORT_PRESSED / DOUBLE_PRESSED / LONG_PRESSED
-
+* **rawbutton**: [System Trigger Channel](https://www.openhab.org/docs/developer/bindings/thing-xml.html#system-trigger-channel-types) of type `rawbutton`.
+* **button**: [System Trigger Channel](https://www.openhab.org/docs/developer/bindings/thing-xml.html#system-trigger-channel-types) of type `button`.
+* **battery-level**: [System State Channel](https://www.openhab.org/docs/developer/bindings/thing-xml.html#system-state-channel-types) of type `battery-level`.
 
 ## Full example
 
