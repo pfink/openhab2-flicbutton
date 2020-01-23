@@ -15,12 +15,13 @@
  */
 package org.openhab.binding.flicbutton.internal.util;
 
-import com.google.common.collect.ImmutableMap;
 import io.flic.fliclib.javaclient.Bdaddr;
 import org.eclipse.smarthome.core.thing.CommonTriggerEvents;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.flicbutton.FlicButtonBindingConstants;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,11 +30,14 @@ import java.util.Map;
  *
  */
 public class FlicButtonUtils {
-    public static final Map<String, String> flicOpenhabTriggerEventMap = ImmutableMap.<String, String> builder()
-            .put("ButtonSingleClick", CommonTriggerEvents.SHORT_PRESSED)
-            .put("ButtonDoubleClick", CommonTriggerEvents.DOUBLE_PRESSED)
-            .put("ButtonHold", CommonTriggerEvents.LONG_PRESSED).put("ButtonDown", CommonTriggerEvents.PRESSED)
-            .put("ButtonUp", CommonTriggerEvents.RELEASED).build();
+    public static final Map<String, String> flicOpenhabTriggerEventMap = Collections.unmodifiableMap(new HashMap<String, String>() {{
+        put("ButtonSingleClick", CommonTriggerEvents.SHORT_PRESSED);
+        put("ButtonDoubleClick", CommonTriggerEvents.DOUBLE_PRESSED);
+        put("ButtonHold", CommonTriggerEvents.LONG_PRESSED);
+        put("ButtonDown", CommonTriggerEvents.PRESSED);
+        put("ButtonUp", CommonTriggerEvents.RELEASED);
+    }});
+
 
     public static ThingUID getThingUIDFromBdAddr(Bdaddr bdaddr, ThingUID bridgeUID) {
         String thingID = bdaddr.toString().replace(":", "-");
@@ -44,5 +48,4 @@ public class FlicButtonUtils {
         String bdaddrRaw = thingUID.getId().replace("-", ":");
         return new Bdaddr(bdaddrRaw);
     }
-
 }

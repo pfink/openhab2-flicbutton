@@ -15,9 +15,6 @@
  */
 package org.openhab.binding.flicbutton.handler;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import io.flic.fliclib.javaclient.FlicClient;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -48,9 +45,8 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
     // Config parameters
     private FlicDaemonBridgeConfiguration cfg;
     // Services
-    private ListeningExecutorService listeningScheduler = MoreExecutors.listeningDecorator(scheduler);
     private FlicButtonDiscoveryService buttonDiscoveryService;
-    private ListenableFuture<?> flicClientFuture;
+    private Future<?> flicClientFuture;
     // For disposal
     private Collection<Future<?>> startedTasks = new ArrayList<>(2);
     private FlicClient flicClient;
@@ -99,13 +95,16 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
         Runnable flicClientService = () -> {
             try {
                 flicClient.handleEvents();
-            } catch (IOException e) {
-                logger.error("Error occured while listening to flicd: {}", e);
+                logger.info("Listening to flicd unexpectedly ended");
+            }
+            catch (Exception e) {
+                logger.info("Error occured while listening to flicd: {}", e);
+            } finally {
+                onClientFailure();
             }
         };
 
-        flicClientFuture = listeningScheduler.submit(flicClientService);
-        flicClientFuture.addListener(() -> onClientFailure(), scheduler);
+        flicClientFuture = scheduler.submit(flicClientService);
         startedTasks.add(flicClientFuture);
     }
 
