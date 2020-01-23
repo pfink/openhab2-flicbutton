@@ -75,7 +75,7 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Configuration (hostname, port) is invalid and cannot be parsed.");
         }
         catch (IOException e) {
-            logger.warn("Error occured while connecting to flicd: {}", e);
+            logger.warn("Error occured while connecting to flicd", e);
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Error connecting to flicd!");
         }
     }
@@ -98,7 +98,7 @@ public class FlicDaemonBridgeHandler extends BaseBridgeHandler {
                 logger.info("Listening to flicd unexpectedly ended");
             }
             catch (Exception e) {
-                logger.info("Error occured while listening to flicd: {}", e);
+                logger.info("Error occured while listening to flicd", e);
             } finally {
                 onClientFailure();
             }

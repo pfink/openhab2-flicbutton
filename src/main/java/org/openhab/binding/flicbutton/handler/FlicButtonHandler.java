@@ -100,7 +100,7 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
                 bridgeHandler.getFlicClient().removeBatteryStatusListener(this.batteryConnection);
             }
         } catch (IOException e) {
-            logger.error("Error occured while removing button channel: {}", e);
+            logger.error("Error occured while removing button channel", e);
         }
 
         super.dispose();

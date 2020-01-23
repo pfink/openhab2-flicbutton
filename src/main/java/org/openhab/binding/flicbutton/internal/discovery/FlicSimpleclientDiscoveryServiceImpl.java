@@ -78,7 +78,7 @@ public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryServi
             }
 
         } catch (IOException e) {
-            logger.warn("Error occured during button discovery: {}", e);
+            logger.warn("Error occured during button discovery", e);
             if (this.scanListener != null) {
                 scanListener.onErrorOccurred(e);
             }
