@@ -52,23 +52,13 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
 * **button**: [System Trigger Channel](https://www.openhab.org/docs/developer/bindings/thing-xml.html#system-trigger-channel-types) of type `button`.
 * **battery-level**: [System State Channel](https://www.openhab.org/docs/developer/bindings/thing-xml.html#system-state-channel-types) of type `battery-level`.
 
-## Full example
+## Getting Started
 
-1. Setup and run flicd as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci)
-1. Connect your buttons to flicd using the simpleclient as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci). Flicd has to run in background the whole time, simpleclient can be killed after you successfully tested the button connection
-1. Drop the .jar file of this plugin into the `addons` directory from openHAB 2
-1. Stop openHAB 2
-1. Add one or more bridges (one for each flicd service you're running - typically just a single one) to your *.things file:
-
-	```
-	Bridge flicbutton:flicd-bridge:mybridge [ hostname="<YOUR_HOSTNAME>" ]
-	```
-
-    Please consider that flicd does only accept connections from localhost by default.
-1. Start openHAB 2
-1. Check if the bridge got up correctly within the Things menue of PaperUI.
-1. Start the discovery on PaperUI. After initial discovery, new buttons should get discovered automatically when being added via simpleclient (only if background discovery is enabled).
-1. Now you can trigger something on state changes or directly react to the events triggered by the button and rawbutton channel. Here some examples:
+1. Setup and run flicd as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci). Please consider that you need a seperate Bluetooth adapter. Shared usage with other Bluetooth services (e.g. Bluez) is not possible.
+1. Connect your buttons to flicd using the simpleclient as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci). Flicd has to run in background the whole time, simpleclient can be killed after you successfully tested the button connection.
+1. Add a flicd-bridge via PaperUI or Textual Configuration. Please consider that flicd does only accept connections from localhost by default, to enable remote connections from openHAB you have to use the `--server-addr` parameter as described in [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci).
+1. When the bridge is online, buttons newly added via simpleclient will automatically get discovered via background Discovery. To discover buttons that were set up before the Binding setup, please run an active scan.
+1. [Profiles](https://www.openhab.org/docs/configuration/items.html#profiles) are the recommended way to use this binding. But it's also possible to setup [Rules](https://www.openhab.org/docs/configuration/rules-dsl.html), e.g. like this:
     ```
     rule "Button rule using the button channel"
 
@@ -86,13 +76,6 @@ You can lookup the MAC addresses of your buttons within the inbox of Paper UI. Y
         logInfo("Flic", "Flic pressed: " + receivedEvent.event)
     end
     ```
-
-## Update FlicButton Binding to the newest version
-
-1. Delete the old version's .jar file from the addons directory
-1. Download the newest [release](https://github.com/pfink/openhab2-flicbutton/releases) and put the new .jar file to the addons directory
-1. If there are upgrade instructions for this specific release within the release notes, please follow them.
-1. Restart openHAB
 
 ## License
 
