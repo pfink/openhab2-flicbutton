@@ -1,9 +1,19 @@
 language: java
 jdk: openjdk11
 before_install:
-  - wget https://github.com/openhab/openhab-addons/archive/2.5.x.tar.gz
-  - tar xzf 2.5.x.tar.gz
-  - mkdir openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
-  - shopt -s extglob dotglob 
-  - mv !(openhab-addons-2.5.x) openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
-  - cd openhab-addons-2.5.x/bundles/org.openhab.binding.flicbutton
+  - git clone --branch 2.5.x https://github.com/openhab/openhab-addons
+  - cd openhab-addons
+  - git branch "${TRAVIS_BRANCH}" || true
+  - git checkout "${TRAVIS_BRANCH}"
+  - cd ..
+  - mkdir -p openhab-addons/bundles/org.openhab.binding.flicbutton
+  - rm -rf .git
+  - shopt -s extglob dotglob
+  - mv !(openhab-addons) openhab-addons/bundles/org.openhab.binding.flicbutton
+  - cd openhab-addons/bundles/org.openhab.binding.flicbutton
+  - rm -rf .travis.yml
+  - git add .
+  - git commit -a -m "${TRAVIS_COMMIT_MESSAGE}"
+  - git remote add pfink https://github.com/pfink/openhab-addons
+  - git push pfink ${TRAVIS_BRANCH}
+  
