@@ -14,6 +14,6 @@ before_install:
   - rm -rf .travis.yml
   - git add .
   - git commit -a -m "${TRAVIS_COMMIT_MESSAGE}"
-  - git remote add pfink https://github.com/pfink/openhab-addons
+  - git remote add pfink https://${GH_TOKEN}@github.com/pfink/openhab-addons
   - git push pfink ${TRAVIS_BRANCH}
   
