@@ -5,8 +5,7 @@ before_install:
   - cd openhab-addons
   - git remote add pfink https://${GH_TOKEN}@github.com/pfink/openhab-addons
   - git fetch pfink ${TRAVIS_BRANCH} || true
-  - git branch ${TRAVIS_BRANCH} || true
-  - git checkout ${TRAVIS_BRANCH}
+  - git branch ${TRAVIS_BRANCH} && git checkout ${TRAVIS_BRANCH} && git pull || true
   - cd ..
   - mkdir -p openhab-addons/bundles/org.openhab.binding.flicbutton
   - rm -rf .git
