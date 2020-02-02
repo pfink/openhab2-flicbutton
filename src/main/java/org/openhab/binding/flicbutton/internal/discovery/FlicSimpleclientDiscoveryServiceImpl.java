@@ -76,7 +76,6 @@ public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryServi
             if (activated) {
                 discoverVerifiedButtons();
             }
-
         } catch (IOException e) {
             logger.warn("Error occured during button discovery", e);
             if (this.scanListener != null) {
@@ -116,7 +115,9 @@ public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryServi
     @Override
     protected void stopBackgroundDiscovery() {
         super.stopBackgroundDiscovery();
-        flicClient.setGeneralCallbacks(null);
+        if(activated) {
+            flicClient.setGeneralCallbacks(null);
+        }
     }
 
     @Override
