@@ -116,7 +116,9 @@ public class FlicSimpleclientDiscoveryServiceImpl extends AbstractDiscoveryServi
     @Override
     protected void stopBackgroundDiscovery() {
         super.stopBackgroundDiscovery();
-        flicClient.setGeneralCallbacks(null);
+        if(flicClient != null) {
+            flicClient.setGeneralCallbacks(null);
+        }
     }
 
     @Override
