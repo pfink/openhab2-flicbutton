@@ -92,6 +92,8 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
 
     @Override
     public void dispose() {
+        cancelDelayedDisconnectTask();
+
         try {
             if(eventConnection != null) {
                 bridgeHandler.getFlicClient().removeConnectionChannel(eventConnection);
@@ -142,11 +144,17 @@ public class FlicButtonHandler extends ChildThingHandler<FlicDaemonBridgeHandler
     // Cleanup delayedDisconnect on status change to online
     @Override
     protected void updateStatus(ThingStatus status, ThingStatusDetail statusDetail, String description) {
-        if (status == ThingStatus.ONLINE && delayedDisconnectTask != null) {
+        if (status == ThingStatus.ONLINE) {
+            cancelDelayedDisconnectTask();
+        }
+        super.updateStatus(status, statusDetail, description);
+    }
+
+    private void cancelDelayedDisconnectTask() {
+        if(delayedDisconnectTask != null) {
             delayedDisconnectTask.cancel(false);
             delayedDisconnectTask = null;
         }
-        super.updateStatus(status, statusDetail, description);
     }
 
     void updateBatteryChannel(int percent) {
