@@ -1,6 +1,6 @@
 # openHAB 2 Flic Button Binding 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Build Status](https://travis-ci.org/pfink/openhab2-flicbutton.svg?branch=master)](https://travis-ci.org/pfink/openhab2-flicbutton) [![codebeat badge](https://codebeat.co/badges/c5ff5257-96fe-4414-ab57-240fde1dc9e9)](https://codebeat.co/projects/github-com-pfink-openhab2-flicbutton)
+[![Project Status: Moved to https://github.com/openhab/openhab-addons/pull/9234 – The project has been moved to a new location, and the version at that location should be considered authoritative.](https://www.repostatus.org/badges/latest/moved.svg)](https://www.repostatus.org/#moved) to [https://github.com/openhab/openhab-addons/pull/9234](https://github.com/openhab/openhab-addons/pull/9234)
 
 openHAB 2 binding for [fliclib-linux-hci](https://github.com/50ButtonsEach/fliclib-linux-hci) using the java clientlib by Shortcut Labs. When you use this binding, please share your expierences [here](https://community.openhab.org/t/how-to-integrate-flic-buttons/4468/12) and create issues at this repository for feature requests and bug reports.
 
